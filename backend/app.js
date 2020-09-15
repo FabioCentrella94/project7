@@ -4,28 +4,27 @@ const mysql = require("mysql");
 
 const app = express()
 
-const db_url = 'connect-e.cxu3dbx5ys9k.eu-west-2.rds.amazonaws.com';
-const db_user = 'OpenClassrooms';
-const db_password = 'VueJS(NodeJS)94';
-const db_port = '3306';
+const host = 'connect-e.cxu3dbx5ys9k.eu-west-2.rds.amazonaws.com';
+const user = 'OpenClassrooms';
+const password = 'VueJS(NodeJS)94';
+const port = '3306';
 
-const connection = mysql.createConnection({
-    host: db_url,
-    user: db_user,
-    password: db_password,
-    port: db_port,
+var connection = mysql.createConnection({
+  host     : host,
+  user     : user,
+  password : password,
+  port     : port
 });
 
-  connection.connect(function(err) {
-    if (err) {
-      console.error('Database connection failed: ' + err.stack);
-      return;
-    }
-  
-    console.log('Connected to AWS MySQL.');
-  });
-  
-  connection.end();
+connection.connect(function(err) {
+  if (err) {
+    console.error('Database connection failed: ' + err.stack);
+    return;
+  }
+  console.log('Connected to AWS MySQL.');
+});
+
+connection.end();
 
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*')

@@ -25,15 +25,18 @@ export default {
   justify-content: space-between;
 
     img {
-        width: 70%;
+        width: 80%;
     }
 
     #linkcontainer {
-        width: 15%;
+        width: 25%;
         display: flex;
-        flex-flow: column;
         justify-content: space-around;
         align-items: flex-end;
+
+        @media only screen and (max-width: 800px) {
+            flex-flow: column;;
+        }
 
         a {
             color: white;

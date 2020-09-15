@@ -2,7 +2,7 @@
     <form>
         <div class="container">
             <div>
-                <h1 v-if="$route.name === 'Login'">Login</h1>
+                <h1 v-if="$route.name === 'login'">Login</h1>
                 <h1 v-else>Register</h1>
             </div>
             <label for="username"><b>Username</b></label>
@@ -14,7 +14,7 @@
             <label for="password"><b>Password</b></label>
             <input v-model="password" @input="checkUserInput" type="password" placeholder="Enter Password" name="password" pattern="^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$" required>
 
-            <button v-if="$route.name === 'Login'" type="submit">Login</button>
+            <button v-if="$route.name === 'login'" type="submit">Login</button>
             <button v-else type="submit" >Register</button>
         </div>
     </form>

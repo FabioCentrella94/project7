@@ -1,22 +1,45 @@
 <template>
   <div id="app">
     <Header></Header>
-    <LoginRegisterForm></LoginRegisterForm>
+    <Login v-if="$route.name === 'login'" @logingIn="logedUser" :key="$route.fullPath"></Login>
+    <Register v-if="$route.name === 'register'" @logingIn="logedUser" :key="$route.fullPath"></Register>
+    <AddPost v-if="$route.name === 'addpost'"></AddPost>
     <Footer></Footer>
   </div>
 </template>
 
 <script>
 import Header from './components/Header';
-import LoginRegisterForm from "./components/LoginRegisterForm";
 import Footer from "./components/Footer";
+import Login from './components/Login';
+import Register from './components/Register';
+import AddPost from './components/AddPost';
+
 
 export default {
   name: 'App',
+  data() {
+    return {
+      loggedIn: false,
+      userId: ''
+    }
+  },
   components: {
     Header,
-    LoginRegisterForm,
-    Footer
+    Footer,
+    Login,
+    Register,
+    AddPost
+  },
+  methods: {
+    logedUser(logingIn) {
+      console.log(this.loggedIn)
+      console.log(this.userId)
+      this.userId = logingIn
+      this.loggedIn = true;
+      console.log(this.loggedIn)
+      console.log(this.userId)
+    }
   }
 }
 </script>

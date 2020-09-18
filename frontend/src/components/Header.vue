@@ -4,8 +4,11 @@
             <router-link to="/"><img src="../assets/Groupomania_Logos/icon-left-font-monochrome-white.svg" alt="Company Logo"></router-link>
         </div>
         <div id="linkcontainer">
-            <router-link to="/">Login</router-link>
-            <router-link to="/register">Register</router-link>
+            <router-link v-if="$route.name === 'register' || $route.name === 'login'" to="/">Login</router-link>
+            <router-link v-if="$route.name === 'register' || $route.name === 'login'" to="/register">Register</router-link>
+            <router-link v-if="$route.name !== 'register' && $route.name !== 'login'" to="/">
+                <span @click="logout">Logout</span>
+            </router-link>
         </div>
     </div>
 </template>
@@ -13,6 +16,11 @@
 <script>
 export default {
     name: 'Header',
+    methods: {
+        logout() {
+            this.$store.commit('logout')
+        }
+    }
 }
 </script>
 

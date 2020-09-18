@@ -1,6 +1,9 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import LoginRegisterForm from '../components/LoginRegisterForm'
+import store from '../store/index';
+import Login from '../components/Login'
+import Register from '../components/Register'
+import AddPost from '../components/AddPost';
 
 Vue.use(VueRouter)
 
@@ -8,12 +11,24 @@ Vue.use(VueRouter)
   {
     path: '/',
     name: 'login',
-    component: LoginRegisterForm
+    component: Login
   },
   {
     path: '/register',
     name: 'register',
-    component: LoginRegisterForm
+    component: Register
+  },
+  {
+    path: '/addpost',
+    name: 'addpost',
+    component: AddPost,
+    beforeEnter(to, from, next) {
+      if (store.state.isLogedIn) {
+        next();
+      } else {
+        next('/');
+      }
+    }
   }
 ]
 

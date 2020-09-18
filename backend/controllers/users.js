@@ -1,63 +1,54 @@
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
-const User = require('../models/user')
+let db = require('../dbConfig');
 
 exports.signup = (req, res, next) => {
   bcrypt.hash(req.body.password, 10).then(hash => {
-    const user = new User({
-      email: req.body.email,
-      password: hash
+    let sql = 'INSERT INTO Users (Username, Email, Password) VALUES ("'+req.body.username+'", "'+req.body.email+'", "'+hash+'")'
+    db.query(sql, function (err, result, fields) {
+      if (err) {
+        if (err.sqlMessage.includes('Username')) 
+          return res.status(409).json({
+            error: new Error('Username already used!')
+          })
+        if (err.sqlMessage.includes('Email')) 
+          return res.status(409).json({
+            error: 'Email already used!'
+          })
+        else 
+          return res.status(500).json({
+            error: err
+          })
+        }
+      res.status(201).json({
+        message: 'User saved successfully!'
+      })
     })
-    user
-      .save()
-      .then(() => {
-        res.status(201).json({
-          message: 'User added successfully!'
-        })
-      })
-      .catch(error => {
-        res.status(500).json({
-          error: error
-        })
-      })
-  })
-}
+  }
+)}
 
 exports.login = (req, res, next) => {
-  User.findOne({ email: req.body.email})
-    .then(user => {
-      if (!user) {
-        return res.status(401).json({
-          error: new Error('User not found!')
-        })
-      }
-      bcrypt
-        .compare(req.body.password, user.password)
+  let sql = 'SELECT * FROM Users WHERE Username="'+req.body.username+'";'
+  db.query(sql, function (err, result, fields) {
+    if (result.length < 1) return res.status(404).json({
+        error: 'User Not Found'
+      })
+      bcrypt.compare(req.body.password, result[0].Password)
         .then(valid => {
           if (!valid) {
             return res.status(401).json({
-              error: new Error('Incorrect password!')
+              error: 'Incorrect Password!'
             })
           }
           const token = jwt.sign(
-            { userId: user._id },
+            { userId: result[0].UserID },
             'FKDAFJKA775JKJFDKAnfamnkjfka-fadfajk',
             { expiresIn: '24h' }
           )
           res.status(200).json({
-            userId: user._id,
+            userId: result[0].UserID,
             token: token
           })
         })
-        .catch(error => {
-          res.status(500).json({
-            error: error
-          })
-        })
-    })
-    .catch(error => {
-      res.status(500).json({
-        error: error
-      })
     })
 }

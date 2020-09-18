@@ -1,34 +1,8 @@
-const Sauce = require('../models/sauce')
 const AWS = require('aws-sdk')
 
 exports.createSauce = (req, res, next) => {
-  req.body.sauce = JSON.parse(req.body.sauce)
   const url = 'https://sopekocko.s3.eu-west-2.amazonaws.com/'
-  const sauce = new Sauce({
-    userId: req.body.sauce.userId,
-    name: req.body.sauce.name,
-    manufacturer: req.body.sauce.manufacturer,
-    description: req.body.sauce.description,
-    mainPepper: req.body.sauce.mainPepper,
-    imageUrl: url + req.file.key,
-    heat: req.body.sauce.heat,
-    likes: 0,
-    dislikes: 0,
-    usersLiked: [],
-    usersDisliked: []
-  })
-  sauce
-    .save()
-    .then(() => {
-      res.status(201).json({
-        message: 'Sauce saved successfully!'
-      })
-    })
-    .catch(error => {
-      res.status(400).json({
-        error: error
-      })
-    })
+
 }
 
 exports.getOneSauce = (req, res, next) => {

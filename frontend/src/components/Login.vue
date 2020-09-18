@@ -2,49 +2,67 @@
     <form>
         <div class="container">
             <div>
-                <h1 v-if="$route.name === 'login'">Login</h1>
-                <h1 v-else>Register</h1>
+                <h1>Login</h1>
             </div>
             <label for="username"><b>Username</b></label>
-            <input v-model="username" @input="checkUserInput" type="text" placeholder="Enter Username" name="username" pattern="^[a-zA-Z0-9]{1,15}$" required>
-
-            <label for="email"><b>Email</b></label>
-            <input v-model="email" @input="checkUserInput" type="text" placeholder="Enter Email" name="email" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$" required>
+            <input v-model="username" type="text" placeholder="Enter Username" name="username" pattern="^[a-zA-Z0-9]{1,15}$" required>
+            <p hidden>Invalid Input</p>
 
             <label for="password"><b>Password</b></label>
-            <input v-model="password" @input="checkUserInput" type="password" placeholder="Enter Password" name="password" pattern="^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$" required>
+            <input v-model="password" type="password" placeholder="Enter Password" name="password" pattern="^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-])\S{8,}$" required>
+            <p hidden>Invalid Input</p>
 
-            <button v-if="$route.name === 'login'" type="submit">Login</button>
-            <button v-else type="submit" >Register</button>
+            <button type="submit" @click.prevent="login">Login</button>
         </div>
     </form>
 </template>
 
 <script>
+import axios from 'axios';
 
 export default {
-  name: 'LoginRegisterForm',
+  name: 'Login',
   data() {
     return {
       username: '',
-      email: '',
-      password: ''
+      password: '',
     }
   },
   methods: {
-    checkUserInput($event) {
-      if ($event.target.value.length > 0 && $event.target.value.match($event.target.pattern)) {
-        $event.target.style.borderColor = 'greenyellow';
-      } else {
-        event.target.style.borderColor = 'red';
-      }
+      login() {
+      axios.post('http://localhost:3000/api/auth/login',
+        {
+        username: this.username,
+        email: this.email,
+        password: this.password,
+        },
+        { headers:
+          {
+            'Content-Type': 'application/json' 
+          }
+        }
+      ).then((response) => {
+        if (response.status === 200) {
+          this.$store.commit('login', response)
+        }
+        this.$router.push("/addpost")
+      }).catch((err => {
+          console.log(err)
+        })
+      )
     }
-  },
+  }
 }
 
 </script>
 
 <style>
+
+p {
+  text-align: center;
+  color: crimson;
+}
+
 h1 {
   text-align: center;
 }
@@ -78,8 +96,12 @@ button, button:active {
   outline: none;
 }
 
-button:hover {
+button:active button:hover {
   opacity: 0.8;
+}
+
+button:disabled {
+  opacity: 0.5;
 }
 
 .container {
@@ -87,13 +109,12 @@ button:hover {
     border-radius: 40px;
     padding: 20px;
     width: 25%;
- 
+    margin: 2% 0;
 }
 
 @media only screen and (max-width: 460px) {
   .container {
     width: 70%;
-    top: 15%;
     margin: 30px 0;
   }
 }
@@ -101,7 +122,6 @@ button:hover {
 @media only screen and (min-width: 461px) and (max-width: 1024px) {
   .container {
     width: 35%;
-    top: 25%;
   }
 }
 

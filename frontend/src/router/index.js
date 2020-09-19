@@ -4,6 +4,7 @@ import store from '../store/index';
 import Login from '../components/Login'
 import Register from '../components/Register'
 import AddPost from '../components/AddPost';
+import PostList from '../components/PostList';
 
 Vue.use(VueRouter)
 
@@ -22,6 +23,18 @@ Vue.use(VueRouter)
     path: '/addpost',
     name: 'addpost',
     component: AddPost,
+    beforeEnter(to, from, next) {
+      if (store.state.isLogedIn) {
+        next();
+      } else {
+        next('/');
+      }
+    }
+  },
+  {
+    path: '/postslist',
+    name: 'postlist',
+    component: PostList,
     beforeEnter(to, from, next) {
       if (store.state.isLogedIn) {
         next();

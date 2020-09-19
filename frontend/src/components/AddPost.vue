@@ -2,6 +2,8 @@
     <form>
         <div class="uploadContainer">
 
+            <h1>Share Your Gif here</h1>
+
             <div>
                 <label for="title"><b>Title</b></label>
                 <input v-model="title" type="text" name="title">
@@ -10,7 +12,7 @@
             <div class="uploadfilecontainer">
                 <label for="file"><b>Upload your file</b></label>
                 <br>
-                <input v-bind="file" type="file" name="file" @change="previewFile($event)">
+                <input type="file" name="file" @change="setDataFileProperty($event)">
             </div>
 
             <button type="submit" @click.prevent="uploadFile">Upload</button>
@@ -31,9 +33,8 @@ export default {
         }
     },
     methods: {
-        previewFile($event) {
+        setDataFileProperty($event) {
             this.file = $event.target.files[0]
-            console.log(this.file)
         },
         uploadFile() {
             let formData = new FormData();
@@ -49,10 +50,16 @@ export default {
             }
             ).then((response) => {
                 console.log(response)
+                this.$router.push('/postlist')
             }).catch((err => {
-                console.log(err.error)
+                console.log(err)
             })
         )}
+    },
+    watch: {
+        disableButton() {
+            console.log(this.file)
+            }
     }
 }
 </script>

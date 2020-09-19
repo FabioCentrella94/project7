@@ -4,6 +4,7 @@
     <Login v-if="$route.name === 'login'" @logingIn="logedUser" :key="$route.fullPath"></Login>
     <Register v-if="$route.name === 'register'" @logingIn="logedUser" :key="$route.fullPath"></Register>
     <AddPost v-if="$route.name === 'addpost'"></AddPost>
+    <PostList v-if="$route.name === 'postlist'"></PostList>
     <Footer></Footer>
   </div>
 </template>
@@ -14,6 +15,7 @@ import Footer from "./components/Footer";
 import Login from './components/Login';
 import Register from './components/Register';
 import AddPost from './components/AddPost';
+import PostList from './components/PostList';
 
 
 export default {
@@ -29,7 +31,8 @@ export default {
     Footer,
     Login,
     Register,
-    AddPost
+    AddPost,
+    PostList
   },
   methods: {
     logedUser(logingIn) {

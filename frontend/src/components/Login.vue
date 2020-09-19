@@ -45,7 +45,7 @@ export default {
         if (response.status === 200) {
           this.$store.commit('login', response)
         }
-        this.$router.push("/addpost")
+        this.$router.push("/postlist")
       }).catch((err => {
           console.log(err)
         })
@@ -75,7 +75,7 @@ form {
 input[type=text], input[type=password], input:focus {
   width: 100%;
   padding: 12px 20px;
-  margin: 10px 0;
+  margin: 10px 0 ;
   display: inline-block;
   border: 3px solid #ccc;
   box-sizing: border-box;
@@ -88,7 +88,7 @@ button, button:active {
   background-color: crimson;
   color: white;
   padding: 14px 20px;
-  margin: 8px 0;
+  margin: 8px 0 ;
   border: none;
   cursor: pointer;
   width: 100%;

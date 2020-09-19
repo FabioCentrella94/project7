@@ -6,6 +6,8 @@
         <div id="linkcontainer">
             <router-link v-if="$route.name === 'register' || $route.name === 'login'" to="/">Login</router-link>
             <router-link v-if="$route.name === 'register' || $route.name === 'login'" to="/register">Register</router-link>
+            <router-link v-if="$route.name !== 'register' && $route.name !== 'login'" to="/addpost">Add Post</router-link>
+            <router-link v-if="$route.name !== 'register' && $route.name !== 'login' && $route.name !== '/postlist'" to="/postlist">Post List</router-link>
             <router-link v-if="$route.name !== 'register' && $route.name !== 'login'" to="/">
                 <span @click="logout">Logout</span>
             </router-link>

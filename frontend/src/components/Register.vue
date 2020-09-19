@@ -104,7 +104,7 @@ export default {
         if (response.status === 200) {
           this.$store.commit('login', response)
         }
-        this.$router.push("/addpost")
+        this.$router.push("/postlist")
       }).catch((err => {
           console.log(err.error)
         })

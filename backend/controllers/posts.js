@@ -111,15 +111,13 @@ exports.deleteSauce = (req, res, next) => {
 }
 
 exports.getAllSauce = (req, res, next) => {
-  Sauce.find()
-    .then(sauces => {
-      res.status(200).json(sauces)
+  let sql = 'SELECT * FROM Posts'
+  db.query(sql, function (err, result, fields) {
+    if (err) return res.status(400).json({
+      error: err
     })
-    .catch(error => {
-      res.status(400).json({
-        error: error
-      })
-    })
+    res.status(200).json(result)
+  })
 }
 
 exports.likeDislikeSauce = (req, res, next) => {

@@ -5,7 +5,7 @@
     <Register v-if="$route.name === 'register'" @logingIn="logedUser" :key="$route.fullPath"></Register>
     <AddPost v-if="$route.name === 'addpost'"></AddPost>
     <PostList v-if="$route.name === 'postlist'"></PostList>
-    <Footer></Footer>
+    <Footer v-if="$route.name !== 'postlist'"></Footer>
   </div>
 </template>
 

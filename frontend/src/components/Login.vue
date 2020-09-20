@@ -44,10 +44,10 @@ export default {
       ).then((response) => {
         if (response.status === 200) {
           this.$store.commit('login', response)
-        }
+        } 
         this.$router.push("/postlist")
       }).catch((err => {
-          console.log(err)
+          alert(err)
         })
       )
     }

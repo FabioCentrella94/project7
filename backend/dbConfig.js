@@ -5,6 +5,7 @@ let dbConfig = {
     database : 'Connect_E',
     user     : 'root',
     password : 'Java\Spring)RDS)94',
+    multipleStatements: true
   };
 
 let connection = mysql.createConnection(dbConfig);

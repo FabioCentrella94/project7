@@ -12,7 +12,7 @@
             <div class="uploadfilecontainer">
                 <label for="file"><b>Upload your file</b></label>
                 <br>
-                <input pattern="^.*\.(jpg|jpeg|png|gif)$" type="file" name="file" @change="validateFileInput($event), previewFile($event)">
+                <input accept="image/gif, image/jpeg, image/png" pattern="^.*\.(jpg|jpeg|png|gif)$" type="file" name="file" @change="validateFileInput($event), previewFile($event)">
                 <img id="imagepreview" />
             </div>
 
@@ -57,8 +57,7 @@ export default {
                 'Authorization': `Bearer ${this.$store.state.token}`,
                 'Content-Type': 'multipart/form-data' 
                 }
-            }).then((response) => {
-                console.log(response)
+            }).then(() => {
                 this.$router.push('/postlist')
             }).catch((err => {
                 console.log(err)

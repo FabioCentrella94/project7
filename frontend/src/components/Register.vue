@@ -84,7 +84,7 @@ export default {
             this.$router.push(this.$router.currentRoute)
           }
       }).catch((err => {
-          console.log(err)
+          alert(err)
         })
       )
     },
@@ -106,7 +106,7 @@ export default {
         }
         this.$router.push("/postlist")
       }).catch((err => {
-          console.log(err.error)
+          alert(err)
         })
       )
     }

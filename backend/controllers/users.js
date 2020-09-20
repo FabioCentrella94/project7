@@ -28,10 +28,16 @@ exports.signup = (req, res, next) => {
 )}
 
 exports.login = (req, res, next) => {
-  let sql = 'SELECT * FROM Users WHERE Username="'+req.body.username+'";'
-  db.query(sql, function (err, result, fields) {
+  let sqlFind = 'SELECT * FROM Users WHERE Username="'+req.body.username+'";'
+  db.query(sqlFind, function (err, result, fields) {
     if (result.length < 1) return res.status(404).json({
         error: 'User Not Found'
+      })
+      let sqlUpdate = 'UPDATE Users SET LoginTime = now() WHERE Username="'+req.body.username+'";'
+      db.query(sqlUpdate, function (err, result, fields) {
+        if (err) return res.status(500).json({
+            error: err
+          })
       })
       bcrypt.compare(req.body.password, result[0].Password)
         .then(valid => {
@@ -47,7 +53,9 @@ exports.login = (req, res, next) => {
           )
           res.status(200).json({
             userId: result[0].UserID,
-            token: token
+            token: token,
+            username: result[0].Username,
+            loginTime: result[0].LoginTime
           })
         })
     })

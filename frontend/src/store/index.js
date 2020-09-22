@@ -13,11 +13,11 @@ export default new Vuex.Store({
   },
   mutations: {
     login(state, response) {
-      state.token = response.data.token
-      state.userId = response.data.userId
+      state.token = response.data.data.token
+      state.userId = response.data.data.userId
       state.isLogedIn = true
-      state.username = response.data.username
-      state.previousLoginTime = response.data.loginTime
+      state.username = response.data.data.username
+      state.previousLoginTime = response.data.data.loginTime
     },
     logout(state) {
       state.username = ''

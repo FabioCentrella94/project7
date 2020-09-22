@@ -78,12 +78,12 @@ export default {
           }
         }
       ).then((response) => {
-          if (response.status === 201) {
+        console.log(response.data);
+          if (response.data.status === '201') {
             setTimeout(() => { this.login() }, 600)
-          } else {
-            this.$router.push(this.$router.currentRoute)
-          }
+          } 
       }).catch((err => {
+        console.log(err)
           alert(err)
         })
       )
@@ -101,7 +101,7 @@ export default {
           }
         }
       ).then((response) => {
-        if (response.status === 200) {
+        if (response.data.status === '200') {
           this.$store.commit('login', response)
         }
         this.$router.push("/postlist")

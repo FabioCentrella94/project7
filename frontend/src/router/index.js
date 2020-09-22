@@ -34,9 +34,6 @@ Vue.use(VueRouter)
   {
     path: '/postlist',
     name: 'postlist',
-    meta: { 
-      pageCategory: 'postlist'
-    },
     component: PostList,
     beforeEnter(to, from, next) {
       if (store.state.isLogedIn) {

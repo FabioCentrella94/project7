@@ -1,23 +1,19 @@
 const mysql = require("mysql");
 
 let dbConfig = {
-    host     : 'connect-e.cxu3dbx5ys9k.eu-west-2.rds.amazonaws.com',
-    user     : 'OpenClassrooms',
-    password : 'VueJS(NodeJS)94',
-    port: '3306',
+    host     : 'localhost',
+    database : 'Connect_E',
+    user     : 'root',
+    password : 'Java\Spring)RDS)94',
     multipleStatements: true
   };
 
 let connection = mysql.createConnection(dbConfig);
 
 connection.connect(function(err) {
-  if (err) {
-    console.error('Database connection failed: ' + err.stack);
-    return;
-  }
-  console.log('Connected to AWS MySQL.');
-});
+    if (err) throw err;
+    console.log("Connected To Local MySQL!");
+  })
 
 module.exports = connection
-
 

@@ -5,11 +5,15 @@ exports.createSauce = (req, res, next) => {
   const fileName = 'https://sopekocko.s3.eu-west-2.amazonaws.com/' + req.file.key;
   let sql = 'INSERT INTO Posts (UserID, Title, ImageURL) VALUES ("'+req.body.userId+'", "'+req.body.title+'", "'+fileName+'")'
   db.query(sql, function (err, result, fields) {
-    if (err) return res.status(500).json({
-      error: err
+    if (err) return res.json({
+      status: '500',
+      message: null,
+      data: err
     })
-    res.status(201).json({
-      message: 'Post saved successfully!'
+    res.json({
+      status: '201',
+      message: 'Post saved successfully!',
+      data: null
     })
   })
 }

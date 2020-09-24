@@ -1,13 +1,17 @@
 <template>
     <div class="postcontainer" >
         <div class="imagetitlecontainer" v-for="post in sortPostsDifferentUser" :key="post.postID">
-            <h2 :key="post.Title">{{ post.Title }}</h2>
-            <img :key="post.ImageURL" :src="post.ImageURL" alt="">
+            <h2>{{ post.Title }}</h2>
+            <img :src="post.ImageURL" alt="">
             <div class="iconcontainer">
-                <div class="icons1">
-                    <span><i class="far fa-thumbs-up"></i></span>
-                    <span><i class="far fa-thumbs-down"></i></span>
-                    <span><i class="far fa-comment-dots"></i></span>
+                <div :key="componentKey" class="icons1">
+                    <span v-if="sortLikesCurrentUser.filter(s => s.PostID === post.PostID).length === 0 && sortDislikesCurrentUser.filter(s => s.PostID === post.PostID).length === 0"><i :id="post.PostID" @click="like($event)" class="far fa-thumbs-up"></i>{{ likes.filter(s => s.PostID === post.PostID).length }}</span>
+                    <span v-if="sortLikesCurrentUser.filter(s => s.PostID === post.PostID).length === 1 && sortDislikesCurrentUser.filter(s => s.PostID === post.PostID).length === 0"><i style="color: yellowgreen" :id="post.PostID" @click="deleteLike($event)" class="far fa-thumbs-up"></i>{{ likes.filter(s => s.PostID === post.PostID).length }}</span>
+                    <span class="disabled" v-if="sortDislikesCurrentUser.filter(s => s.PostID === post.PostID).length === 1 && sortLikesCurrentUser.filter(s => s.PostID === post.PostID).length === 0"><i style="opacity: 0.5;" class="far fa-thumbs-up"></i>{{ likes.filter(s => s.PostID === post.PostID).length }}</span>
+                    <span v-if="sortDislikesCurrentUser.filter(s => s.PostID === post.PostID).length === 0 && sortLikesCurrentUser.filter(s => s.PostID === post.PostID).length === 0"><i :id="post.PostID" @click="dislike($event)" class="far fa-thumbs-down"></i>{{ dislikes.filter(s => s.PostID === post.PostID).length }}</span>
+                    <span class="disabled"  v-if="sortDislikesCurrentUser.filter(s => s.PostID === post.PostID).length === 1 && sortLikesCurrentUser.filter(s => s.PostID === post.PostID).length === 0"><i style="color: crimson" :id="post.PostID" @click="deleteDislike($event)" class="far fa-thumbs-down"></i>{{ dislikes.filter(s => s.PostID === post.PostID).length }}</span>
+                    <span v-if="sortLikesCurrentUser.filter(s => s.PostID === post.PostID).length === 1 && sortDislikesCurrentUser.filter(s => s.PostID === post.PostID).length === 0"><i style="opacity: 0.5;" class="far fa-thumbs-down"></i>{{ dislikes.filter(s => s.PostID === post.PostID).length }}</span>
+                    <span ><i class="far fa-comment-dots"></i></span>
                 </div>
                 <div :id="post.PostID" class="icons2">
                     <span v-if="post.DateTime > previousLoginTime && post.UserID !== currentLogedInUser && !getSessionStorage.hasOwnProperty(post.PostID) || previousLoginTime == null && post.UserID !== currentLogedInUser && !getSessionStorage.hasOwnProperty(post.PostID)"><i class="fas fa-bell"></i></span>
@@ -26,7 +30,10 @@ export default {
     data() {
         return {
             posts: [],
-            scrolled: false
+            likes: [],
+            dislikes: [],
+            scrolled: false,
+            componentKey: 0,
         }
     },
     computed: {
@@ -49,7 +56,15 @@ export default {
         },
         getSessionStorage() {
             return {...sessionStorage}
-        }
+        },
+        sortLikesCurrentUser() {
+            return [...this.likes]
+            .filter(s => s.UserID === this.$store.state.userId)
+        },
+        sortDislikesCurrentUser() {
+            return [...this.dislikes]
+            .filter(s => s.UserID === this.$store.state.userId)
+        }       
     },
     methods: {
         getPosts() {
@@ -64,7 +79,87 @@ export default {
                 console.log(err)
             }))
         },
-          handleScroll () {
+        getLikes() {
+            axios.get('http://localhost:3000/api/post/likes',
+            { headers:
+                {
+                'Authorization': `Bearer ${this.$store.state.token}`, 
+                }
+            }).then((response) => {
+                this.likes = response.data
+            }).catch((err => {
+                console.log(err)
+            }))
+        }, 
+        getDislikes() {
+            axios.get('http://localhost:3000/api/post/dislikes',
+            { headers:
+                {
+                'Authorization': `Bearer ${this.$store.state.token}`, 
+                }
+            }).then((response) => {
+                this.dislikes = response.data
+                console.log(this.sortLikesCurrentUser)
+            }).catch((err => {
+                console.log(err)
+            }))
+        },
+        like($event) {
+            axios.post('http://localhost:3000/api/post/like', { postId: $event.target.id,  userId: this.$store.state.userId}, {
+            headers: {
+                    'Authorization': `Bearer ${this.$store.state.token}`,
+                    'Content-Type': 'application/json'  
+                }
+            },
+            ).then((response) => {
+                console.log(response.data)
+                this.getLikes()
+            }).catch((err => {
+                console.log(err)
+            }))
+        },
+        dislike($event) {
+            axios.post('http://localhost:3000/api/post/dislike', { postId: $event.target.id,  userId: this.$store.state.userId}, {
+            headers: {
+                    'Authorization': `Bearer ${this.$store.state.token}`,
+                    'Content-Type': 'application/json'  
+                }
+            },
+            ).then((response) => {
+                console.log(response.data)
+                this.getDislikes()
+            }).catch((err => {
+                console.log(err)
+            }))
+        },
+        deleteLike($event) {
+            axios.delete('http://localhost:3000/api/post/deletelike/' + $event.target.id + '/' + this.$store.state.userId, {
+                headers: {
+                    Authorization: `Bearer ${this.$store.state.token}`
+                },
+            }).then((response) => {
+                console.log(response.data)
+                this.getLikes()
+            }).catch((err => {
+                console.log(err)
+            }))
+        },
+        deleteDislike($event) {
+            axios.delete('http://localhost:3000/api/post/deletedislike/' + $event.target.id + '/' + this.$store.state.userId, {
+                headers: {
+                    Authorization: `Bearer ${this.$store.state.token}`
+                },
+            }).then((response) => {
+                console.log(response.data)
+                this.getDislikes()
+            }).catch((err => {
+                console.log(err)
+            }))
+        },
+        forceRerender() {
+            this.componentKey += 1;
+        },
+        handleScroll () {
               let postHeight = document.querySelectorAll('.icons2')
               for ( let i = 0; i < postHeight.length; i++) {
                 if (postHeight[i].getBoundingClientRect().bottom < (window.innerHeight - 35)) {
@@ -76,7 +171,9 @@ export default {
         }
     },
         beforeMount() {
-            this.getPosts()
+            this.getPosts(),
+            this.getLikes(),
+            this.getDislikes()
     },
         created () {
             window.addEventListener('scroll', this.handleScroll);

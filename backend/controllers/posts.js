@@ -124,39 +124,86 @@ exports.getAllSauce = (req, res, next) => {
   })
 }
 
-exports.likeDislikeSauce = (req, res, next) => {
-  req.body = req.body
-  Sauce.findOne({ _id: req.params.id }).then(sauce => {
-    if (req.body.like == 1) {
-      sauce.usersLiked.push(req.body.userId)
-      sauce.likes += req.body.like
-    } else if (
-      req.body.like == 0 &&
-      sauce.usersLiked.includes(req.body.userId)
-    ) {
-      sauce.usersLiked.remove(req.body.userId)
-      sauce.likes -= 1
-    } else if (req.body.like == -1) {
-      sauce.usersDisliked.push(req.body.userId)
-      sauce.dislikes += 1
-    } else if (
-      req.body.like == 0 &&
-      sauce.usersDisliked.includes(req.body.userId)
-    ) {
-      sauce.usersDisliked.remove(req.body.userId)
-      sauce.dislikes -= 1
-    }
-    sauce
-      .save()
-      .then(() => {
-        res.status(200).json({
-          message: 'Preference Updated!'
-        })
-      })
-      .catch(error => {
-        res.status(400).json({
-          error: error
-        })
-      })
+exports.getAllLikes = (req, res, next) => {
+  let sql = 'SELECT * FROM Likes'
+  db.query(sql, function (err, result, fields) {
+    if (err) return res.status(400).json({
+      error: err
+    })
+    res.status(200).json(result)
+  })
+}
+
+exports.getAllDislikes = (req, res, next) => {
+  let sql = 'SELECT * FROM Dislikes'
+  db.query(sql, function (err, result, fields) {
+    if (err) return res.status(400).json({
+      error: err
+    })
+    res.status(200).json(result)
+  })
+}
+
+exports.likeSauce = (req, res, next) => {
+  let sql = 'INSERT INTO Likes (PostID, UserID) VALUES ("'+req.body.postId+'", "'+req.body.userId+'")'
+  db.query(sql, function (err, result, fields) {
+    if (err) return res.json({
+      status: '400',
+      message: null,
+      data: err
+    })
+    res.json({
+      status: '200',
+      message: 'Preference updated!',
+      data: null
+    })
+  })
+}
+
+exports.dislikeSauce = (req, res, next) => {
+  let sql = 'INSERT INTO Dislikes (PostID, UserID) VALUES ("'+req.body.postId+'", "'+req.body.userId+'")'
+  db.query(sql, function (err, result, fields) {
+    if (err) return res.json({
+      status: '400',
+      message: null,
+      data: err
+    })
+    res.json({
+      status: '200',
+      message: 'Preference updated!',
+      data: null
+    })
+  })
+}
+
+exports.deleteLike = (req, res, next) => {
+  let sql = 'DELETE FROM Likes WHERE PostID = "'+req.params.postId+'" AND UserID = "'+req.params.userId+'";'
+  db.query(sql, function (err, result, fields) {
+    if (err) return res.json({
+      status: '400',
+      message: null,
+      data: err
+    })
+    res.json({
+      status: '200',
+      message: 'Preference updated!',
+      data: null
+    })
+  })
+}
+
+exports.deleteDislike = (req, res, next) => {
+  let sql = 'DELETE FROM Dislikes WHERE PostID = "'+req.params.postId+'" AND UserID = "'+req.params.userId+'";'
+  db.query(sql, function (err, result, fields) {
+    if (err) return res.json({
+      status: '400',
+      message: null,
+      data: err
+    })
+    res.json({
+      status: '200',
+      message: 'Preference updated!',
+      data: null
+    })
   })
 }

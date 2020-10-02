@@ -1,5 +1,6 @@
 <template>
     <form>
+        <img src="../assets/7plQ.gif" alt="" id="loadingGif" hidden>
         <div class="container">
             <div>
                 <h1>Register</h1>
@@ -25,7 +26,7 @@
 import axios from 'axios';
 
 export default {
-  name: 'LoginRegisterForm',
+  name: 'RegistrationForm',
   data() {
     return {
       username: '',
@@ -66,6 +67,8 @@ export default {
       }
     },
     register() {
+      document.getElementsByClassName('container')[0].setAttribute('hidden', true)
+      document.getElementById('loadingGif').removeAttribute('hidden')
       axios.post('http://localhost:3000/api/auth/signup',
         {
         username: this.username,
@@ -78,12 +81,28 @@ export default {
           }
         }
       ).then((response) => {
-        console.log(response.data);
           if (response.data.status === '201') {
             setTimeout(() => { this.login() }, 600)
-          } 
+          } else if (response.data.status === '409' && response.data.message === 'Username already used!' ) {
+            document.getElementById('loadingGif').setAttribute('hidden', true);
+            document.getElementsByClassName('container')[0].removeAttribute('hidden')
+            alert(response.data.message);
+            let usernameInput = document.getElementsByName('username')
+            usernameInput[0].style.borderColor = 'crimson';
+          } else if (response.data.status === '409' && response.data.message === 'Email already used!' ) {
+            document.getElementById('loadingGif').setAttribute('hidden', true);
+            document.getElementsByClassName('container')[0].removeAttribute('hidden')
+            alert(response.data.message);
+            let emailInput = document.getElementsByName('email')
+            emailInput[0].style.borderColor = 'crimson';
+          } else {
+            document.getElementById('loadingGif').setAttribute('hidden', true);
+            document.getElementsByClassName('container')[0].removeAttribute('hidden')
+            alert(response.data.message)
+          }
       }).catch((err => {
-        console.log(err)
+          document.getElementById('loadingGif').setAttribute('hidden', true);
+          document.getElementsByClassName('container')[0].removeAttribute('hidden')
           alert(err)
         })
       )
@@ -103,9 +122,15 @@ export default {
       ).then((response) => {
         if (response.data.status === '200') {
           this.$store.commit('login', response)
+          this.$router.push("/postlist")
+        } else {
+          document.getElementById('loadingGif').setAttribute('hidden', true);
+          document.getElementsByClassName('container')[0].removeAttribute('hidden')
+          alert(response.data.message)
         }
-        this.$router.push("/postlist")
       }).catch((err => {
+          document.getElementById('loadingGif').setAttribute('hidden', true);
+          document.getElementsByClassName('container')[0].removeAttribute('hidden')
           alert(err)
         })
       )

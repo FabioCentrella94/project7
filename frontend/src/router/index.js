@@ -1,10 +1,13 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import store from '../store/index';
 import Login from '../components/Login'
 import Register from '../components/Register'
 import AddPost from '../components/AddPost';
 import PostList from '../components/PostList';
+import Profile from '../components/Profile';
+import SinglePost from '../components/SinglePost';
+import EditPost from '../components/EditPost';
+import NotFound from '../components/NotFound';
 
 Vue.use(VueRouter)
 
@@ -24,7 +27,7 @@ Vue.use(VueRouter)
     name: 'addpost',
     component: AddPost,
     beforeEnter(to, from, next) {
-      if (store.state.isLogedIn) {
+      if (sessionStorage.getItem('isLogedIn') !== null) {
         next();
       } else {
         next('/');
@@ -36,12 +39,53 @@ Vue.use(VueRouter)
     name: 'postlist',
     component: PostList,
     beforeEnter(to, from, next) {
-      if (store.state.isLogedIn) {
+      if (sessionStorage.getItem('isLogedIn') !== null) {
         next();
       } else {
         next('/');
       }
     }
+  },
+  {
+    path: '/profile/:userId',
+    name: 'profile',
+    component: Profile,
+    beforeEnter(to, from, next) {
+      if (sessionStorage.getItem('isLogedIn') !== null) {
+        next();
+      } else {
+        next('/');
+      }
+    }
+  },
+  {
+    path: '/singlepost/:postId',
+    name: 'singlepost',
+    component: SinglePost,
+    beforeEnter(to, from, next) {
+      if (sessionStorage.getItem('isLogedIn') !== null) {
+        next();
+      } else {
+        next('/');
+      }
+    }
+  },
+  {
+    path: '/editpost/:postId',
+    name: 'editpost',
+    component: EditPost,
+    beforeEnter(to, from, next) {
+      if (sessionStorage.getItem('isLogedIn') !== null) {
+        next();
+      } else {
+        next('/');
+      }
+    }
+  },
+  {
+    path :'*',
+    name: 'notfound',
+    component: NotFound
   }
 ]
 

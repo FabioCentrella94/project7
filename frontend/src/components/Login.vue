@@ -1,5 +1,6 @@
 <template>
     <form>
+        <img src="../assets/7plQ.gif" alt="" id="loadingGif" hidden>
         <div class="container">
             <div>
                 <h1>Login</h1>
@@ -21,7 +22,7 @@
 import axios from 'axios';
 
 export default {
-  name: 'Login',
+  name: 'LoginForm',
   data() {
     return {
       username: '',
@@ -29,7 +30,9 @@ export default {
     }
   },
   methods: {
-      login() {
+login() {
+      document.getElementsByClassName('container')[0].setAttribute('hidden', true)
+      document.getElementById('loadingGif').removeAttribute('hidden')
       axios.post('http://localhost:3000/api/auth/login',
         {
         username: this.username,
@@ -42,11 +45,25 @@ export default {
           }
         }
       ).then((response) => {
-        if (response.status === 200) {
+        if (response.data.status === '200') {
           this.$store.commit('login', response)
-        } 
-        this.$router.push("/postlist")
+          this.$router.push("/postlist")
+        } else if (response.data.status === '404') {
+          document.getElementById('loadingGif').setAttribute('hidden', true);
+          document.getElementsByClassName('container')[0].removeAttribute('hidden')
+          alert(response.data.message)
+        } else if (response.data.status === '401') {
+          document.getElementById('loadingGif').setAttribute('hidden', true);
+          document.getElementsByClassName('container')[0].removeAttribute('hidden')
+          alert(response.data.message)
+        } else {
+          document.getElementById('loadingGif').setAttribute('hidden', true);
+          document.getElementsByClassName('container')[0].removeAttribute('hidden')
+          alert(response.data.message)
+        }
       }).catch((err => {
+          document.getElementById('loadingGif').setAttribute('hidden', true);
+          document.getElementsByClassName('container')[0].removeAttribute('hidden')
           alert(err)
         })
       )

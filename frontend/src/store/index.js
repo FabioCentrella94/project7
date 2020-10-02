@@ -5,26 +5,18 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    token: '',
-    userId: '',
-    username: '',
-    isLogedIn: false,
-    previousLoginTime: ''
+    
   },
   mutations: {
     login(state, response) {
-      state.token = response.data.data.token
-      state.userId = response.data.data.userId
-      state.isLogedIn = true
-      state.username = response.data.data.username
-      state.previousLoginTime = response.data.data.loginTime
+      sessionStorage.setItem("token", response.data.data.token);
+      sessionStorage.setItem("email", response.data.data.email);
+      sessionStorage.setItem("userId", response.data.data.userId);
+      sessionStorage.setItem("isLogedIn", true);
+      sessionStorage.setItem("username", response.data.data.username);
     },
-    logout(state) {
-      state.username = ''
-      state.token = ''
-      state.userId = ''
-      state.isLogedIn = false
-      state.previousLoginTime = ''
+    logout() {
+      sessionStorage.clear()
     }
   },
   actions: {

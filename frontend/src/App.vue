@@ -5,7 +5,11 @@
     <Register v-if="$route.name === 'register'" @logingIn="logedUser" :key="$route.fullPath"></Register>
     <AddPost v-if="$route.name === 'addpost'"></AddPost>
     <PostList v-if="$route.name === 'postlist'"></PostList>
-    <Footer v-if="$route.name !== 'postlist'"></Footer>
+    <Profile v-if="$route.name === 'profile'"></Profile>
+    <SinglePost v-if="$route.name === 'singlepost'"></SinglePost>
+    <EditPost v-if="$route.name === 'editpost'"></EditPost>
+    <NotFound v-if="$route.name !== 'login' && $route.name !== 'register' && $route.name !== 'postlist' && $route.name !== 'singlepost' && $route.name !== 'addpost' && $route.name !== 'editpost' && $route.name !== 'profile'"></NotFound>
+    <Footer v-if="$route.name !== 'postlist' && $route.name !== 'singlepost'"></Footer>
   </div>
 </template>
 
@@ -16,7 +20,10 @@ import Login from './components/Login';
 import Register from './components/Register';
 import AddPost from './components/AddPost';
 import PostList from './components/PostList';
-
+import Profile from './components/Profile';
+import SinglePost from './components/SinglePost';
+import EditPost from './components/EditPost';
+import NotFound from './components/NotFound';
 
 export default {
   name: 'App',
@@ -32,16 +39,16 @@ export default {
     Login,
     Register,
     AddPost,
-    PostList
+    PostList,
+    Profile,
+    SinglePost,
+    EditPost,
+    NotFound
   },
   methods: {
     logedUser(logingIn) {
-      console.log(this.loggedIn)
-      console.log(this.userId)
       this.userId = logingIn
       this.loggedIn = true;
-      console.log(this.loggedIn)
-      console.log(this.userId)
     }
   }
 }
@@ -53,5 +60,9 @@ export default {
   display: flex;
   flex-flow: column;
   justify-content: space-between;
+}
+
+a {
+  color: inherit;
 }
 </style>

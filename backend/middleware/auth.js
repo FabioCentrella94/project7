@@ -5,17 +5,23 @@ module.exports = (req, res, next) => {
     const token = req.headers.authorization.split(' ')[1]
     const decodedToken = jwt.verify(
       token,
-      'FKDAFJKA775JKJFDKAnfamnkjfka-fadfajk'
+      'FKDAFJKA775JKJFDKAnfamnkjfka-fadfajkjfkadf89kfdka/fafak*kfdajkfjakjkfadfaduirueqir847jfancmnahjkfanvh12hj3hjfafkjfa'
     )
     const userId = decodedToken.userId
-    if (req.body.userId && req.body.userId !== userId) {
-      throw 'Invalid user ID'
+    if (req.body.userId && req.body.userId !== userId || req.params.userId && req.params.userId !== userId ) {
+      throw res.json({
+        status: '401',
+        message: 'Invalid User Id, please login again to confirm your identity',
+        data: null
+      })
     } else {
       next()
     }
   } catch {
-    res.status(401).json({
-      error: new Error('Invalid request!')
+    res.json({
+      status: '401',
+      message: 'Your session is expired, please login again',
+      data: null
     })
   }
 }

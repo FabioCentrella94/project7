@@ -1,102 +1,77 @@
-const Sauce = require('../models/sauce')
 const AWS = require('aws-sdk')
+let db = require('../dbConfig');
 
-exports.createSauce = (req, res, next) => {
-  req.body.sauce = JSON.parse(req.body.sauce)
-  const url = 'https://sopekocko.s3.eu-west-2.amazonaws.com/'
-  const sauce = new Sauce({
-    userId: req.body.sauce.userId,
-    name: req.body.sauce.name,
-    manufacturer: req.body.sauce.manufacturer,
-    description: req.body.sauce.description,
-    mainPepper: req.body.sauce.mainPepper,
-    imageUrl: url + req.file.key,
-    heat: req.body.sauce.heat,
-    likes: 0,
-    dislikes: 0,
-    usersLiked: [],
-    usersDisliked: []
+exports.uploadPost = (req, res, next) => {
+  const fileName = 'https://sopekocko.s3.eu-west-2.amazonaws.com/' + req.file.key;
+  let sql = 'INSERT INTO Posts (UserID, Title, ImageURL) VALUES ("'+req.body.userId+'", "'+req.body.title+'", "'+fileName+'")'
+  db.query(sql, function (err, result, fields) {
+    if (err) return res.json({
+      status: err.status,
+      message: err.sqlMessage,
+      data: err
+    })
+    res.json({
+      status: '201',
+      message: 'Post saved successfully!',
+      data: null
+    })
   })
-  sauce
-    .save()
-    .then(() => {
-      res.status(201).json({
-        message: 'Sauce saved successfully!'
-      })
-    })
-    .catch(error => {
-      res.status(400).json({
-        error: error
-      })
-    })
 }
 
-exports.getOneSauce = (req, res, next) => {
-  Sauce.findOne({
-    _id: req.params.id
+exports.commentPost = (req, res, next) => {
+  let sql = 'INSERT INTO Comments (UserID, Comment, PostID, ParentID) VALUES ("'+req.body.userId+'", "'+req.body.comment+'", "'+req.params.postId+'", '+req.body.parentId+')'
+  db.query(sql, function (err, result, fields) {
+    if (err) return res.json({
+      status: err.status,
+      message: err.sqlMessage,
+      data: err
+    })
+    res.json({
+      status: '201',
+      message: 'Comment saved successfully!',
+      data: null
+    })
   })
-    .then(sauce => {
-      res.status(200).json(sauce)
-    })
-    .catch(error => {
-      res.status(404).json({
-        error: error
-      })
-    })
 }
 
-exports.updateSauce = (req, res, next) => {
-  Sauce.findOne({ _id: req.params.id }).then(sauce => {
-    if (req.file) {
+exports.editPost = (req, res, next) => {
+  let sqlSelect = 'SELECT * FROM Posts WHERE PostID = "'+req.params.postId+'";'
+    db.query(sqlSelect, function (err, result, fields) {
+      if (err) return res.json({
+        status: err.status,
+        message: err.sqlMessage,
+        data: err
+      })
       const s3 = new AWS.S3()
       const params = {
         Bucket: 'sopekocko',
-        Key: sauce.imageUrl.replace(
+        Key: result[0].ImageURL.replace(
           'https://sopekocko.s3.eu-west-2.amazonaws.com/',
           ''
         )
       }
       s3.deleteObject(params, function (err, data) {
-        if (err) console.log(err, err.stack)
-        else console.log()
-      })
-      
-      const url = 'https://sopekocko.s3.eu-west-2.amazonaws.com/'
-      req.body.sauce = JSON.parse(req.body.sauce)
-      sauce = {
-        _id: req.params.id,
-        userId: req.body.sauce.userId,
-        name: req.body.sauce.name,
-        manufacturer: req.body.sauce.manufacturer,
-        description: req.body.sauce.description,
-        mainPepper: req.body.sauce.mainPepper,
-        imageUrl: url + req.file.key,
-        heat: req.body.sauce.heat
-      }
-    } else {
-      sauce = {
-        _id: req.params.id,
-        userId: req.body.userId,
-        name: req.body.name,
-        manufacturer: req.body.manufacturer,
-        description: req.body.description,
-        mainPepper: req.body.mainPepper,
-        heat: req.body.heat
-      }
-    }
-
-    Sauce.updateOne({ _id: req.params.id }, sauce)
-      .then(() => {
-        res.status(201).json({
-          message: 'Sauce updated successfully!'
+        if (err) return res.json({
+          status: err.Code,
+          message: err.Message,
+          data: err
         })
       })
-      .catch(error => {
-        res.status(400).json({
-          error: error
-        })
+    })
+    const fileName = 'https://sopekocko.s3.eu-west-2.amazonaws.com/' + req.file.key;
+    let sqlUpdate = 'UPDATE Posts SET Title = "'+req.body.title+'", ImageURL = "'+fileName+'" WHERE PostID = "'+req.params.postId+'";'
+    db.query(sqlUpdate, function (err, result, fields) {
+      if (err) return res.json({
+        status: err.status,
+        message: err.sqlMessage,
+        data: err
       })
-  })
+      res.json({
+        status: '200',
+        message: 'Post Edited!',
+        data: null
+      })
+    })
 }
 
 exports.deleteSauce = (req, res, next) => {
@@ -127,51 +102,298 @@ exports.deleteSauce = (req, res, next) => {
   })
 }
 
-exports.getAllSauce = (req, res, next) => {
-  Sauce.find()
-    .then(sauces => {
-      res.status(200).json(sauces)
+exports.getAllPosts = (req, res, next) => {
+  let sql = 'SELECT Posts.PostID, Posts.UserID, Posts.Title, Posts.ImageURL, Posts.DateTime, Users.Username FROM Posts INNER JOIN Users ON Posts.UserID=Users.UserID;'
+  db.query(sql, function (err, result, fields) {
+    if (err) return res.json({
+      status: err.status,
+      message: err.sqlMessage,
+      data: err
     })
-    .catch(error => {
-      res.status(400).json({
-        error: error
-      })
+    res.json({
+      status: '200',
+      message: null,
+      data: result
     })
+  })
 }
 
-exports.likeDislikeSauce = (req, res, next) => {
-  req.body = req.body
-  Sauce.findOne({ _id: req.params.id }).then(sauce => {
-    if (req.body.like == 1) {
-      sauce.usersLiked.push(req.body.userId)
-      sauce.likes += req.body.like
-    } else if (
-      req.body.like == 0 &&
-      sauce.usersLiked.includes(req.body.userId)
-    ) {
-      sauce.usersLiked.remove(req.body.userId)
-      sauce.likes -= 1
-    } else if (req.body.like == -1) {
-      sauce.usersDisliked.push(req.body.userId)
-      sauce.dislikes += 1
-    } else if (
-      req.body.like == 0 &&
-      sauce.usersDisliked.includes(req.body.userId)
-    ) {
-      sauce.usersDisliked.remove(req.body.userId)
-      sauce.dislikes -= 1
+exports.getSinglePost = (req, res, next) => {
+  let sql = 'SELECT * FROM Posts WHERE PostID = "'+req.params.postId+'";'
+  db.query(sql, function (err, result, fields) {
+    if (err) return res.json({
+      status: err.status,
+      message: err.sqlMessage,
+      data: err
+    })
+    res.json({
+      status: '200',
+      message: null,
+      data: result
+    })
+  })
+}
+
+exports.getAllLikesPosts = (req, res, next) => {
+  let sql = 'SELECT * FROM PostLikes'
+  db.query(sql, function (err, result, fields) {
+    if (err) return res.json({
+      status: err.status,
+      message: err.sqlMessage,
+      error: err
+    })
+    res.json({
+      status: '200',
+      message: null,
+      data: result
+    })
+  })
+}
+
+exports.getAllDislikesPosts = (req, res, next) => {
+  let sql = 'SELECT * FROM PostDislikes'
+  db.query(sql, function (err, result, fields) {
+    if (err) return res.json({
+      status: err.status,
+      message: err.sqlMessage,
+      data: err
+    })
+    res.json({
+      status: '200',
+      message: null,
+      data: result
+    })
+  })
+}
+
+exports.likePost = (req, res, next) => {
+  let sql = 'INSERT INTO PostLikes (PostID, UserID) VALUES ("'+req.body.postId+'", "'+req.body.userId+'")'
+  db.query(sql, function (err, result, fields) {
+    if (err) return res.json({
+      status: '400',
+      message: null,
+      data: err
+    })
+    res.json({
+      status: '200',
+      message: 'Preference Updated!',
+      data: null
+    })
+  })
+}
+
+exports.dislikePost = (req, res, next) => {
+  let sql = 'INSERT INTO PostDislikes (PostID, UserID) VALUES ("'+req.body.postId+'", "'+req.body.userId+'")'
+  db.query(sql, function (err, result, fields) {
+    if (err) return res.json({
+      status: err.status,
+      message: err.sqlMessage,
+      data: err
+    })
+    res.json({
+      status: '200',
+      message: 'Preference updated!',
+      data: null
+    })
+  })
+}
+
+exports.deleteLikePost = (req, res, next) => {
+  let sql = 'DELETE FROM PostLikes WHERE PostID = "'+req.params.postId+'" AND UserID = "'+req.params.userId+'";'
+  db.query(sql, function (err, result, fields) {
+    if (err) return res.json({
+      status: err.status,
+      message: err.sqlMessage,
+      data: err
+    })
+    res.json({
+      status: '200',
+      message: 'Preference updated!',
+      data: null
+    })
+  })
+}
+
+exports.deleteDislikePost = (req, res, next) => {
+  let sql = 'DELETE FROM PostDislikes WHERE PostID = "'+req.params.postId+'" AND UserID = "'+req.params.userId+'";'
+  db.query(sql, function (err, result, fields) {
+    if (err) return res.json({
+      status: err.status,
+      message: err.sqlMessage,
+      data: err
+    })
+    res.json({
+      status: '200',
+      message: 'Preference updated!',
+      data: null
+    })
+  })
+}
+
+exports.getCommentsPost = (req, res, next) => {
+  let sql = 'SELECT Comments.CommentID, Comments.Comment, Comments.UserID, Comments.PostID, Comments.ParentID, Users.Username FROM Comments INNER JOIN Users On Comments.UserID = Users.UserID WHERE PostID = "'+req.params.postId+'"'
+  db.query(sql, function (err, comments, fields) {
+    if (err) return res.json({
+      status: err.status,
+      message: err.sqlMessage,
+      error: err
+    })
+    
+    if (comments.length !== 0) {
+
+      function hierarchySortFunc(a,b ) {
+        return a.name > b.name;
+      }
+    
+      function hierarhySort(hashArr, key, result) {
+        if (hashArr[key] == undefined) return;
+        let arr = hashArr[key].sort(hierarchySortFunc);
+        for (let i = 0; i < arr.length; i++) {
+          result.push(arr[i]);
+          hierarhySort(hashArr, arr[i].CommentID, result);
+        }
+        return result;
+      }
+    
+      var arr = comments
+    
+      var hashArr = {};
+    
+      for (let i = 0; i < arr.length; i++) {
+        if (hashArr[arr[i].ParentID] == undefined) hashArr[arr[i].ParentID] = [];
+        hashArr[arr[i].ParentID].push(arr[i]);
+      }
+    
+      let result = hierarhySort(hashArr, 0, []);
+    
+      const nest = (items, CommentID = 0, link = 'ParentID') =>
+      items
+        .filter(item => item[link] === CommentID)
+        .map(item => ({ ...item, children: nest(items, item.CommentID) }));
+    
+      res.json({
+        status: '200',
+        message: null,
+        data: nest(result)
+      })
+    } else {
+      res.json({
+        status: '200',
+        message: 'No comments',
+        data: null
+      })
     }
-    sauce
-      .save()
-      .then(() => {
-        res.status(200).json({
-          message: 'Preference Updated!'
-        })
-      })
-      .catch(error => {
-        res.status(400).json({
-          error: error
-        })
-      })
+  })
+}
+ 
+exports.getUserDetails = (req, res, next) => {
+  let sql = 'SELECT * FROM Users WHERE UserID = "'+req.params.userId+'";'
+  db.query(sql, function (err, result, fields) {
+    if (err) return res.json({
+      status: err.status,
+      message: err.sqlMessage,
+      data: err
+    })
+    res.json({
+      status: '200',
+      message: null,
+      data: result
+    })
+  })
+}
+
+exports.getAllLikesComments = (req, res, next) => {
+  let sql = 'SELECT * FROM CommentLikes'
+  db.query(sql, function (err, result, fields) {
+    if (err) return res.json({
+      status: err.status,
+      message: err.sqlMessage,
+      error: err
+    })
+    res.json({
+      status: '200',
+      message: null,
+      data: result
+    })
+  })
+}
+
+exports.getAllDislikesComments = (req, res, next) => {
+  let sql = 'SELECT * FROM CommentDislikes'
+  db.query(sql, function (err, result, fields) {
+    if (err) return res.json({
+      status: err.status,
+      message: err.sqlMessage,
+      error: err
+    })
+    res.json({
+      status: '200',
+      message: null,
+      data: result
+    })
+  })
+}
+
+exports.likeComment = (req, res, next) => {
+  let sql = 'INSERT INTO CommentLikes (PostID, UserID) VALUES ("'+req.body.commentId+'", "'+req.body.userId+'")'
+  db.query(sql, function (err, result, fields) {
+    if (err) return res.json({
+      status: '400',
+      message: null,
+      data: err
+    })
+    res.json({
+      status: '200',
+      message: 'Preference Updated!',
+      data: null
+    })
+  })
+}
+
+exports.dislikeComment = (req, res, next) => {
+  let sql = 'INSERT INTO PostDislikes (PostID, UserID) VALUES ("'+req.body.commentId+'", "'+req.body.userId+'")'
+  db.query(sql, function (err, result, fields) {
+    if (err) return res.json({
+      status: err.status,
+      message: err.sqlMessage,
+      data: err
+    })
+    res.json({
+      status: '200',
+      message: 'Preference updated!',
+      data: null
+    })
+  })
+}
+
+exports.deleteLikeComment = (req, res, next) => {
+  let sql = 'DELETE FROM PostLikes WHERE PostID = "'+req.params.postId+'" AND UserID = "'+req.params.userId+'";'
+  db.query(sql, function (err, result, fields) {
+    if (err) return res.json({
+      status: err.status,
+      message: err.sqlMessage,
+      data: err
+    })
+    res.json({
+      status: '200',
+      message: 'Preference updated!',
+      data: null
+    })
+  })
+}
+
+exports.deleteDislikeComment = (req, res, next) => {
+  let sql = 'DELETE FROM PostDislikes WHERE PostID = "'+req.params.postId+'" AND UserID = "'+req.params.userId+'";'
+  db.query(sql, function (err, result, fields) {
+    if (err) return res.json({
+      status: err.status,
+      message: err.sqlMessage,
+      data: err
+    })
+    res.json({
+      status: '200',
+      message: 'Preference updated!',
+      data: null
+    })
   })
 }

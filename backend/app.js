@@ -1,7 +1,7 @@
 const express = require('express')
 const bodyParser = require('body-parser')
-const mysql = require("mysql");
 
+<<<<<<< HEAD
 const app = express()
 
 const host = 'connect-e.cxu3dbx5ys9k.eu-west-2.rds.amazonaws.com';
@@ -25,6 +25,12 @@ connection.connect(function(err) {
 });
 
 connection.end();
+=======
+const postsRoutes = require('./routes/posts')
+const usersRoutes = require('./routes/users')
+
+const app = express()
+>>>>>>> e8cc3fc9295f8adb701f209b11b32b6bda15d99f
 
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*')
@@ -40,5 +46,8 @@ app.use((req, res, next) => {
 })
 
 app.use(bodyParser.json())
+
+app.use('/api/post', postsRoutes)
+app.use('/api/auth', usersRoutes)
 
 module.exports = app

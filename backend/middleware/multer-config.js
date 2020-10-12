@@ -3,8 +3,8 @@ const multer = require('multer')
 const multerS3 = require('multer-s3')
 
 aws.config.update({
-  secretAccessKey: '',
-  accessKeyId: '',
+  secretAccessKey: process.env.AWS_S3_SECRET_ACCESS_KEY,
+  accessKeyId: process.env.AWS_S3_ACCESS_KEY_ID,
   region: 'eu-west-2'
 })
 
@@ -20,4 +20,4 @@ const upload = multer({
   })
 })
 
-module.exports = multer(upload).single('image')
+module.exports = multer(upload).single('file')

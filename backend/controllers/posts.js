@@ -135,7 +135,7 @@ exports.getSinglePost = (req, res, next) => {
 }
 
 exports.getAllLikesPosts = (req, res, next) => {
-  let sql = 'SELECT * FROM Likes'
+  let sql = 'SELECT * FROM PostLikes'
   db.query(sql, function (err, result, fields) {
     if (err) return res.json({
       status: err.status,
@@ -151,7 +151,7 @@ exports.getAllLikesPosts = (req, res, next) => {
 }
 
 exports.getAllDislikesPosts = (req, res, next) => {
-  let sql = 'SELECT * FROM Dislikes'
+  let sql = 'SELECT * FROM PostDislikes'
   db.query(sql, function (err, result, fields) {
     if (err) return res.json({
       status: err.status,
@@ -167,7 +167,7 @@ exports.getAllDislikesPosts = (req, res, next) => {
 }
 
 exports.likePost = (req, res, next) => {
-  let sql = 'INSERT INTO Likes (PostID, UserID) VALUES ("'+req.body.postId+'", "'+req.body.userId+'")'
+  let sql = 'INSERT INTO PostLikes (PostID, UserID) VALUES ("'+req.body.postId+'", "'+req.body.userId+'")'
   db.query(sql, function (err, result, fields) {
     if (err) return res.json({
       status: '400',
@@ -183,7 +183,7 @@ exports.likePost = (req, res, next) => {
 }
 
 exports.dislikePost = (req, res, next) => {
-  let sql = 'INSERT INTO Dislikes (PostID, UserID) VALUES ("'+req.body.postId+'", "'+req.body.userId+'")'
+  let sql = 'INSERT INTO PostDislikes (PostID, UserID) VALUES ("'+req.body.postId+'", "'+req.body.userId+'")'
   db.query(sql, function (err, result, fields) {
     if (err) return res.json({
       status: err.status,
@@ -199,7 +199,7 @@ exports.dislikePost = (req, res, next) => {
 }
 
 exports.deleteLikePost = (req, res, next) => {
-  let sql = 'DELETE FROM Likes WHERE PostID = "'+req.params.postId+'" AND UserID = "'+req.params.userId+'";'
+  let sql = 'DELETE FROM PostLikes WHERE PostID = "'+req.params.postId+'" AND UserID = "'+req.params.userId+'";'
   db.query(sql, function (err, result, fields) {
     if (err) return res.json({
       status: err.status,
@@ -215,7 +215,7 @@ exports.deleteLikePost = (req, res, next) => {
 }
 
 exports.deleteDislikePost = (req, res, next) => {
-  let sql = 'DELETE FROM Dislikes WHERE PostID = "'+req.params.postId+'" AND UserID = "'+req.params.userId+'";'
+  let sql = 'DELETE FROM PostDislikes WHERE PostID = "'+req.params.postId+'" AND UserID = "'+req.params.userId+'";'
   db.query(sql, function (err, result, fields) {
     if (err) return res.json({
       status: err.status,
@@ -298,6 +298,102 @@ exports.getUserDetails = (req, res, next) => {
       status: '200',
       message: null,
       data: result
+    })
+  })
+}
+
+exports.getAllLikesComments = (req, res, next) => {
+  let sql = 'SELECT * FROM CommentLikes'
+  db.query(sql, function (err, result, fields) {
+    if (err) return res.json({
+      status: err.status,
+      message: err.sqlMessage,
+      error: err
+    })
+    res.json({
+      status: '200',
+      message: null,
+      data: result
+    })
+  })
+}
+
+exports.getAllDislikesComments = (req, res, next) => {
+  let sql = 'SELECT * FROM CommentDislikes'
+  db.query(sql, function (err, result, fields) {
+    if (err) return res.json({
+      status: err.status,
+      message: err.sqlMessage,
+      error: err
+    })
+    res.json({
+      status: '200',
+      message: null,
+      data: result
+    })
+  })
+}
+
+exports.likeComment = (req, res, next) => {
+  let sql = 'INSERT INTO CommentLikes (PostID, UserID) VALUES ("'+req.body.commentId+'", "'+req.body.userId+'")'
+  db.query(sql, function (err, result, fields) {
+    if (err) return res.json({
+      status: '400',
+      message: null,
+      data: err
+    })
+    res.json({
+      status: '200',
+      message: 'Preference Updated!',
+      data: null
+    })
+  })
+}
+
+exports.dislikeComment = (req, res, next) => {
+  let sql = 'INSERT INTO PostDislikes (PostID, UserID) VALUES ("'+req.body.commentId+'", "'+req.body.userId+'")'
+  db.query(sql, function (err, result, fields) {
+    if (err) return res.json({
+      status: err.status,
+      message: err.sqlMessage,
+      data: err
+    })
+    res.json({
+      status: '200',
+      message: 'Preference updated!',
+      data: null
+    })
+  })
+}
+
+exports.deleteLikeComment = (req, res, next) => {
+  let sql = 'DELETE FROM PostLikes WHERE PostID = "'+req.params.postId+'" AND UserID = "'+req.params.userId+'";'
+  db.query(sql, function (err, result, fields) {
+    if (err) return res.json({
+      status: err.status,
+      message: err.sqlMessage,
+      data: err
+    })
+    res.json({
+      status: '200',
+      message: 'Preference updated!',
+      data: null
+    })
+  })
+}
+
+exports.deleteDislikeComment = (req, res, next) => {
+  let sql = 'DELETE FROM PostDislikes WHERE PostID = "'+req.params.postId+'" AND UserID = "'+req.params.userId+'";'
+  db.query(sql, function (err, result, fields) {
+    if (err) return res.json({
+      status: err.status,
+      message: err.sqlMessage,
+      data: err
+    })
+    res.json({
+      status: '200',
+      message: 'Preference updated!',
+      data: null
     })
   })
 }

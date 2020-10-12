@@ -142,11 +142,6 @@ export default {
 
 <style>
 
-p {
-  text-align: center;
-  color: crimson;
-}
-
 h1 {
   text-align: center;
 }
@@ -194,6 +189,11 @@ button:disabled {
     padding: 20px;
     width: 25%;
     margin: 2% 0;
+}
+
+.container > p {
+  text-align: center;
+  color: crimson;
 }
 
 @media only screen and (max-width: 460px) {

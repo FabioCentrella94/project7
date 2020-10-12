@@ -6,12 +6,12 @@
             <hr>
             <div class="singleposticoncontainer">
                 <div :key="componentKey" class="singleposticons1">
-                    <span style="cursor: pointer" v-if="sortLikesCurrentUser.filter(s => s.PostID === post.PostID).length === 0 && sortDislikesCurrentUser.filter(s => s.PostID === post.PostID).length === 0"><i :id="post.PostID" @click="like($event)" class="far fa-thumbs-up"></i>{{ likes.filter(s => s.PostID === post.PostID).length }}</span>
-                    <span style="cursor: pointer" v-if="sortLikesCurrentUser.filter(s => s.PostID === post.PostID).length === 1 && sortDislikesCurrentUser.filter(s => s.PostID === post.PostID).length === 0"><i style="color: yellowgreen" :id="post.PostID" @click="deleteLike($event)" class="far fa-thumbs-up"></i>{{ likes.filter(s => s.PostID === post.PostID).length }}</span>
-                    <span class="disabled" v-if="sortDislikesCurrentUser.filter(s => s.PostID === post.PostID).length === 1 && sortLikesCurrentUser.filter(s => s.PostID === post.PostID).length === 0"><i style="opacity: 0.5;" class="far fa-thumbs-up"></i>{{ likes.filter(s => s.PostID === post.PostID).length }}</span>
-                    <span style="cursor: pointer" v-if="sortDislikesCurrentUser.filter(s => s.PostID === post.PostID).length === 0 && sortLikesCurrentUser.filter(s => s.PostID === post.PostID).length === 0"><i :id="post.PostID" @click="dislike($event)" class="far fa-thumbs-down"></i>{{ dislikes.filter(s => s.PostID === post.PostID).length }}</span>
-                    <span style="cursor: pointer" class="disabled"  v-if="sortDislikesCurrentUser.filter(s => s.PostID === post.PostID).length === 1 && sortLikesCurrentUser.filter(s => s.PostID === post.PostID).length === 0"><i style="color: crimson" :id="post.PostID" @click="deleteDislike($event)" class="far fa-thumbs-down"></i>{{ dislikes.filter(s => s.PostID === post.PostID).length }}</span>
-                    <span v-if="sortLikesCurrentUser.filter(s => s.PostID === post.PostID).length === 1 && sortDislikesCurrentUser.filter(s => s.PostID === post.PostID).length === 0"><i style="opacity: 0.5;" class="far fa-thumbs-down"></i>{{ dislikes.filter(s => s.PostID === post.PostID).length }}</span>
+                    <span style="cursor: pointer" v-if="sortPostLikesCurrentUser.filter(s => s.PostID === post.PostID).length === 0 && sortPostDislikesCurrentUser.filter(s => s.PostID === post.PostID).length === 0"><i :id="post.PostID" @click="like($event)" class="far fa-thumbs-up"></i>{{ postLikes.filter(s => s.PostID === post.PostID).length }}</span>
+                    <span style="cursor: pointer" v-if="sortPostLikesCurrentUser.filter(s => s.PostID === post.PostID).length === 1 && sortPostDislikesCurrentUser.filter(s => s.PostID === post.PostID).length === 0"><i style="color: yellowgreen" :id="post.PostID" @click="deleteLike($event)" class="far fa-thumbs-up"></i>{{ postLikes.filter(s => s.PostID === post.PostID).length }}</span>
+                    <span class="disabled" v-if="sortPostDislikesCurrentUser.filter(s => s.PostID === post.PostID).length === 1 && sortPostLikesCurrentUser.filter(s => s.PostID === post.PostID).length === 0"><i style="opacity: 0.5;" class="far fa-thumbs-up"></i>{{ postLikes.filter(s => s.PostID === post.PostID).length }}</span>
+                    <span style="cursor: pointer" v-if="sortPostDislikesCurrentUser.filter(s => s.PostID === post.PostID).length === 0 && sortPostLikesCurrentUser.filter(s => s.PostID === post.PostID).length === 0"><i :id="post.PostID" @click="dislike($event)" class="far fa-thumbs-down"></i>{{ postDislikes.filter(s => s.PostID === post.PostID).length }}</span>
+                    <span style="cursor: pointer" class="disabled"  v-if="sortPostDislikesCurrentUser.filter(s => s.PostID === post.PostID).length === 1 && sortPostLikesCurrentUser.filter(s => s.PostID === post.PostID).length === 0"><i style="color: crimson" :id="post.PostID" @click="deleteDislike($event)" class="far fa-thumbs-down"></i>{{ postDislikes.filter(s => s.PostID === post.PostID).length }}</span>
+                    <span v-if="sortPostLikesCurrentUser.filter(s => s.PostID === post.PostID).length === 1 && sortPostDislikesCurrentUser.filter(s => s.PostID === post.PostID).length === 0"><i style="opacity: 0.5;" class="far fa-thumbs-down"></i>{{ postDislikes.filter(s => s.PostID === post.PostID).length }}</span>
                 </div>
                 <div class="singleposticons2" v-if="post.UserID === logedInUser">
                     <router-link style="color: white; cursor: pointer; text-decoration: none; background-color: crimson; border-radius: 10px; padding: 0.5% 5%;" :to="{ name: 'editpost', params: { postId: post.PostID }}">
@@ -44,8 +44,8 @@ export default {
     data() {
         return {
             post: [],
-            likes: [],
-            dislikes: [],
+            postLikes: [],
+            postDislikes: [],
             componentKey: 0,
             comment: '',
             comments: [],
@@ -56,12 +56,12 @@ export default {
         logedInUser() {
             return sessionStorage.getItem('userId')
         },
-        sortLikesCurrentUser() {
-            return [...this.likes]
+        sortPostLikesCurrentUser() {
+            return [...this.postLikes]
             .filter(s => s.UserID === sessionStorage.getItem('userId'))
         },
-        sortDislikesCurrentUser() {
-            return [...this.dislikes]
+        sortPostDislikesCurrentUser() {
+            return [...this.postDislikes]
             .filter(s => s.UserID === sessionStorage.getItem('userId'))
         },
         currentLogedInUser() {
@@ -90,15 +90,15 @@ export default {
                 alert(err)
             }))
         },
-        getLikes() {
-            axios.get('http://localhost:3000/api/post/likes',
+        getPostLikes() {
+            axios.get('http://localhost:3000/api/post/postlikes',
             { headers:
                 {
                 'Authorization': `Bearer ${sessionStorage.getItem('token')}`, 
                 }
             }).then((response) => {
                 if (response.data.status === '200') {
-                    this.likes = response.data.data
+                    this.postLikes = response.data.data
                 } else if (response.data.status === '401') {
                     alert(response.data.message)
                     this.$router.push('/')
@@ -109,15 +109,15 @@ export default {
                 alert(err)
             }))
         }, 
-        getDislikes() {
-            axios.get('http://localhost:3000/api/post/dislikes',
+        getPostDislikes() {
+            axios.get('http://localhost:3000/api/post/postdislikes',
             { headers:
                 {
                 'Authorization': `Bearer ${sessionStorage.getItem('token')}`, 
                 }
             }).then((response) => {
                 if (response.data.status === '200') {
-                    this.dislikes = response.data.data
+                    this.postDislikes = response.data.data
                 } else if (response.data.status === '401') {
                     alert(response.data.message)
                     this.$router.push('/')
@@ -137,7 +137,7 @@ export default {
             },
             ).then((response) => {
                 if (response.data.status === '200') {
-                    this.getLikes()
+                    this.getPostLikes()
                 } else if (response.data.status === '401') {
                     alert(response.data.message)
                     this.$router.push('/')
@@ -157,7 +157,7 @@ export default {
             },
             ).then((response) => {
                 if (response.data.status === '200') {
-                    this.getDislikes()
+                    this.getPostDislikes()
                 } else if (response.data.status === '401') {
                     alert(response.data.message)
                     this.$router.push('/')
@@ -175,7 +175,7 @@ export default {
                 },
             }).then((response) => {
                 if (response.data.status === '200') {
-                    this.getLikes()
+                    this.getPostLikes()
                 } else if (response.data.status === '401') {
                     alert(response.data.message)
                     this.$router.push('/')
@@ -193,7 +193,7 @@ export default {
                 },
             }).then((response) => {
                 if (response.data.status === '200') {
-                    this.getDislikes()
+                    this.getPostDislikes()
                 } else if (response.data.status === '401') {
                     alert(response.data.message)
                     this.$router.push('/')
@@ -257,8 +257,8 @@ export default {
     },
         beforeMount() {
             this.getSinglePost(),
-            this.getLikes(),
-            this.getDislikes()
+            this.getPostLikes(),
+            this.getPostDislikes()
             this.getComments()
         },
 }

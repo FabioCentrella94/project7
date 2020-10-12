@@ -1,27 +1,10 @@
 const express = require('express')
 const bodyParser = require('body-parser')
-var sql = require("mssql");
+
+const postsRoutes = require('./routes/posts')
+const usersRoutes = require('./routes/users')
 
 const app = express()
-
-var config = {
-    user: 'sa',
-    password: '13Agosto94',
-    server: 'localhost',
-    database: 'connect_e',
-    options: {
-        enableArithAbort: true
-    }
-};
-
-sql.connect(config)
-    .then(() => {
-        console.log('Successfully connected to SQL Server!')
-    })
-    .catch(error => {
-        console.log('Unable to connect to SQL Server!')
-        console.error(error)
-    })
 
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*')
@@ -37,5 +20,8 @@ app.use((req, res, next) => {
 })
 
 app.use(bodyParser.json())
+
+app.use('/api/post', postsRoutes)
+app.use('/api/auth', usersRoutes)
 
 module.exports = app

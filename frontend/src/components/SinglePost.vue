@@ -1,16 +1,16 @@
 <template>
-    <div class="singlepostcontainer" >
+    <div  class="singlepostcontainer" >
         <div class="singlepostimagecontainer">
             <h2>{{ post.Title }}</h2>
             <img :src="post.ImageURL" alt="">
             <hr>
             <div class="singleposticoncontainer">
                 <div :key="componentKey" class="singleposticons1">
-                    <span style="cursor: pointer" v-if="sortPostLikesCurrentUser.filter(s => s.PostID === post.PostID).length === 0 && sortPostDislikesCurrentUser.filter(s => s.PostID === post.PostID).length === 0"><i :id="post.PostID" @click="like($event)" class="far fa-thumbs-up"></i>{{ postLikes.filter(s => s.PostID === post.PostID).length }}</span>
-                    <span style="cursor: pointer" v-if="sortPostLikesCurrentUser.filter(s => s.PostID === post.PostID).length === 1 && sortPostDislikesCurrentUser.filter(s => s.PostID === post.PostID).length === 0"><i style="color: yellowgreen" :id="post.PostID" @click="deleteLike($event)" class="far fa-thumbs-up"></i>{{ postLikes.filter(s => s.PostID === post.PostID).length }}</span>
-                    <span class="disabled" v-if="sortPostDislikesCurrentUser.filter(s => s.PostID === post.PostID).length === 1 && sortPostLikesCurrentUser.filter(s => s.PostID === post.PostID).length === 0"><i style="opacity: 0.5;" class="far fa-thumbs-up"></i>{{ postLikes.filter(s => s.PostID === post.PostID).length }}</span>
-                    <span style="cursor: pointer" v-if="sortPostDislikesCurrentUser.filter(s => s.PostID === post.PostID).length === 0 && sortPostLikesCurrentUser.filter(s => s.PostID === post.PostID).length === 0"><i :id="post.PostID" @click="dislike($event)" class="far fa-thumbs-down"></i>{{ postDislikes.filter(s => s.PostID === post.PostID).length }}</span>
-                    <span style="cursor: pointer" class="disabled"  v-if="sortPostDislikesCurrentUser.filter(s => s.PostID === post.PostID).length === 1 && sortPostLikesCurrentUser.filter(s => s.PostID === post.PostID).length === 0"><i style="color: crimson" :id="post.PostID" @click="deleteDislike($event)" class="far fa-thumbs-down"></i>{{ postDislikes.filter(s => s.PostID === post.PostID).length }}</span>
+                    <span style="cursor: pointer" v-if="sortPostLikesCurrentUser.filter(s => s.PostID === post.PostID).length === 0 && sortPostDislikesCurrentUser.filter(s => s.PostID === post.PostID).length === 0"><i :id="post.PostID" @click="likePost($event)" class="far fa-thumbs-up"></i>{{ postLikes.filter(s => s.PostID === post.PostID).length }}</span>
+                    <span style="cursor: pointer" v-if="sortPostLikesCurrentUser.filter(s => s.PostID === post.PostID).length === 1 && sortPostDislikesCurrentUser.filter(s => s.PostID === post.PostID).length === 0"><i style="color: yellowgreen" :id="post.PostID" @click="deleteLikePost($event)" class="far fa-thumbs-up"></i>{{ postLikes.filter(s => s.PostID === post.PostID).length }}</span>
+                    <span v-if="sortPostDislikesCurrentUser.filter(s => s.PostID === post.PostID).length === 1 && sortPostLikesCurrentUser.filter(s => s.PostID === post.PostID).length === 0"><i style="opacity: 0.5;" class="far fa-thumbs-up"></i>{{ postLikes.filter(s => s.PostID === post.PostID).length }}</span>
+                    <span style="cursor: pointer" v-if="sortPostDislikesCurrentUser.filter(s => s.PostID === post.PostID).length === 0 && sortPostLikesCurrentUser.filter(s => s.PostID === post.PostID).length === 0"><i :id="post.PostID" @click="dislikePost($event)" class="far fa-thumbs-down"></i>{{ postDislikes.filter(s => s.PostID === post.PostID).length }}</span>
+                    <span style="cursor: pointer" v-if="sortPostDislikesCurrentUser.filter(s => s.PostID === post.PostID).length === 1 && sortPostLikesCurrentUser.filter(s => s.PostID === post.PostID).length === 0"><i style="color: crimson" :id="post.PostID" @click="deleteDislikePost($event)" class="far fa-thumbs-down"></i>{{ postDislikes.filter(s => s.PostID === post.PostID).length }}</span>
                     <span v-if="sortPostLikesCurrentUser.filter(s => s.PostID === post.PostID).length === 1 && sortPostDislikesCurrentUser.filter(s => s.PostID === post.PostID).length === 0"><i style="opacity: 0.5;" class="far fa-thumbs-down"></i>{{ postDislikes.filter(s => s.PostID === post.PostID).length }}</span>
                 </div>
                 <div class="singleposticons2" v-if="post.UserID === logedInUser">
@@ -23,8 +23,9 @@
         </div>
         <hr>
         <div v-for="comment in comments" :key="comment.CommentID">
-            <Comments :node="comment"></Comments>
+            <Comments :node="comment" @commentsUpdate="getComments"></Comments>
         </div>
+        <br>
         <form>
             <input placeholder="Write a comment..." type="text" name="comment" v-model="comment">
             <button @click.prevent="postComment" type="submit"><i style="font-size: 20px;" class="far fa-comment-dots"></i></button>
@@ -63,9 +64,6 @@ export default {
         sortPostDislikesCurrentUser() {
             return [...this.postDislikes]
             .filter(s => s.UserID === sessionStorage.getItem('userId'))
-        },
-        currentLogedInUser() {
-            return sessionStorage.getItem('userId')
         },
     },
     methods: {
@@ -128,8 +126,8 @@ export default {
                 alert(err)
             }))
         },
-        like($event) {
-            axios.post('http://localhost:3000/api/post/like', { postId: $event.target.id,  userId: sessionStorage.getItem('userId')}, {
+        likePost($event) {
+            axios.post('http://localhost:3000/api/post/likepost', { postId: $event.target.id,  userId: sessionStorage.getItem('userId')}, {
             headers: {
                     'Authorization': `Bearer ${sessionStorage.getItem('token')}`,
                     'Content-Type': 'application/json'  
@@ -148,8 +146,8 @@ export default {
                 alert(err)
             }))
         },
-        dislike($event) {
-            axios.post('http://localhost:3000/api/post/dislike', { postId: $event.target.id,  userId: sessionStorage.getItem('userId')}, {
+        dislikePost($event) {
+            axios.post('http://localhost:3000/api/post/dislikepost', { postId: $event.target.id,  userId: sessionStorage.getItem('userId')}, {
             headers: {
                     'Authorization': `Bearer ${sessionStorage.getItem('token')}`,
                     'Content-Type': 'application/json'  
@@ -168,7 +166,7 @@ export default {
                 alert(err)
             }))
         },
-        deleteLike($event) {
+        deleteLikePost($event) {
             axios.delete('http://localhost:3000/api/post/deletelikepost/' + $event.target.id + '/' + sessionStorage.getItem('userId'), {
                 headers: {
                     Authorization: `Bearer ${sessionStorage.getItem('token')}`
@@ -186,7 +184,7 @@ export default {
                 alert(err)
             }))
         },
-        deleteDislike($event) {
+        deleteDislikePost($event) {
             axios.delete('http://localhost:3000/api/post/deletedislikepost/' + $event.target.id + '/' + sessionStorage.getItem('userId'), {
                 headers: {
                     Authorization: `Bearer ${sessionStorage.getItem('token')}`
@@ -213,7 +211,6 @@ export default {
             }).then((response) => {
                 if (response.data.status === '200') {
                     this.comments = response.data.data
-                    console.log(this.comments)
                 } else if (response.data.status === '401') {
                     alert(response.data.message)
                     this.$router.push('/')
@@ -232,24 +229,25 @@ export default {
                 }
             },
             ).then((response) => {
-                console.log(response.data.status)
                 if (response.data.status === '201') {
                     this.getComments()
                     this.comment = ''
                     this.parentId = 0
                 } else if (response.data.status === '401') {
                     alert(response.data.message)
+                    this.comment = ''
+                    this.parentId = 0
                     this.$router.push('/')
                 } else {
                     alert(response.data.message)
+                    this.comment = ''
+                    this.parentId = 0
                 }      
             }).catch((err => {
                 alert(err)
+                this.comment = ''
+                this.parentId = 0
             }))
-        },
-        reply($event) {
-            this.parentId = $event.target.id
-            document.getElementsByName("comment")[0].focus();
         },
         forceRerender() {
             this.componentKey += 1;

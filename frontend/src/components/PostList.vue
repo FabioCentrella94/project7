@@ -4,23 +4,23 @@
             <h1>Start sharing your gif with the community</h1>
         </div>
         <div v-else class="imagetitlecontainer" v-for="post in sortPostsDifferentUser" :key="post.postID">
-            <h4>{{ post.Username }}</h4>
+            <h3 style="color: crimson;">{{ post.Username }}</h3>
             <h2>{{ post.Title }}</h2>
             <img :src="post.ImageURL" alt="">
             <div class="iconcontainer">
                 <div :key="componentKey" class="icons1">
-                    <span style="cursor: pointer" v-if="sortPostLikesCurrentUser.filter(s => s.PostID === post.PostID).length === 0 && sortPostDislikesCurrentUser.filter(s => s.PostID === post.PostID).length === 0"><i :id="post.PostID" @click="like($event)" class="far fa-thumbs-up"></i>{{ postLikes.filter(s => s.PostID === post.PostID).length }}</span>
-                    <span style="cursor: pointer" v-if="sortPostLikesCurrentUser.filter(s => s.PostID === post.PostID).length === 1 && sortPostDislikesCurrentUser.filter(s => s.PostID === post.PostID).length === 0"><i style="color: yellowgreen" :id="post.PostID" @click="deleteLike($event)" class="far fa-thumbs-up"></i>{{ postLikes.filter(s => s.PostID === post.PostID).length }}</span>
-                    <span class="disabled" v-if="sortPostDislikesCurrentUser.filter(s => s.PostID === post.PostID).length === 1 && sortPostLikesCurrentUser.filter(s => s.PostID === post.PostID).length === 0"><i style="opacity: 0.5;" class="far fa-thumbs-up"></i>{{ postLikes.filter(s => s.PostID === post.PostID).length }}</span>
-                    <span style="cursor: pointer" v-if="sortPostDislikesCurrentUser.filter(s => s.PostID === post.PostID).length === 0 && sortPostLikesCurrentUser.filter(s => s.PostID === post.PostID).length === 0"><i :id="post.PostID" @click="dislike($event)" class="far fa-thumbs-down"></i>{{ postDislikes.filter(s => s.PostID === post.PostID).length }}</span>
-                    <span style="cursor: pointer" class="disabled"  v-if="sortPostDislikesCurrentUser.filter(s => s.PostID === post.PostID).length === 1 && sortPostLikesCurrentUser.filter(s => s.PostID === post.PostID).length === 0"><i style="color: crimson" :id="post.PostID" @click="deleteDislike($event)" class="far fa-thumbs-down"></i>{{ postDislikes.filter(s => s.PostID === post.PostID).length }}</span>
+                    <span style="cursor: pointer" v-if="sortPostLikesCurrentUser.filter(s => s.PostID === post.PostID).length === 0 && sortPostDislikesCurrentUser.filter(s => s.PostID === post.PostID).length === 0"><i :id="post.PostID" @click="likePost($event)" class="far fa-thumbs-up"></i>{{ postLikes.filter(s => s.PostID === post.PostID).length }}</span>
+                    <span style="cursor: pointer" v-if="sortPostLikesCurrentUser.filter(s => s.PostID === post.PostID).length === 1 && sortPostDislikesCurrentUser.filter(s => s.PostID === post.PostID).length === 0"><i style="color: yellowgreen" :id="post.PostID" @click="deleteLikePost($event)" class="far fa-thumbs-up"></i>{{ postLikes.filter(s => s.PostID === post.PostID).length }}</span>
+                    <span v-if="sortPostDislikesCurrentUser.filter(s => s.PostID === post.PostID).length === 1 && sortPostLikesCurrentUser.filter(s => s.PostID === post.PostID).length === 0"><i style="opacity: 0.5;" class="far fa-thumbs-up"></i>{{ postLikes.filter(s => s.PostID === post.PostID).length }}</span>
+                    <span style="cursor: pointer" v-if="sortPostDislikesCurrentUser.filter(s => s.PostID === post.PostID).length === 0 && sortPostLikesCurrentUser.filter(s => s.PostID === post.PostID).length === 0"><i :id="post.PostID" @click="dislikePost($event)" class="far fa-thumbs-down"></i>{{ postDislikes.filter(s => s.PostID === post.PostID).length }}</span>
+                    <span style="cursor: pointer" v-if="sortPostDislikesCurrentUser.filter(s => s.PostID === post.PostID).length === 1 && sortPostLikesCurrentUser.filter(s => s.PostID === post.PostID).length === 0"><i style="color: crimson" :id="post.PostID" @click="deleteDislikePost($event)" class="far fa-thumbs-down"></i>{{ postDislikes.filter(s => s.PostID === post.PostID).length }}</span>
                     <span v-if="sortPostLikesCurrentUser.filter(s => s.PostID === post.PostID).length === 1 && sortPostDislikesCurrentUser.filter(s => s.PostID === post.PostID).length === 0"><i style="opacity: 0.5;" class="far fa-thumbs-down"></i>{{ postDislikes.filter(s => s.PostID === post.PostID).length }}</span>
                     <router-link :to="{ name: 'singlepost', params: { postId: post.PostID }}">
                         <span ><i class="far fa-comment-dots"></i></span>
                     </router-link>
                 </div>
                 <div @click="markPostAsRead($event)" :id="post.PostID" class="icons2">
-                    <span v-if="post.UserID !== currentLogedInUser && !getLocalStorage.hasOwnProperty(post.PostID)"><i @click="markPostAsRead($event)" :id="post.PostID" class="fas fa-bell"></i></span>
+                    <span v-if="post.UserID !== logedInUser && !getLocalStorage.hasOwnProperty(post.PostID)"><i @click="markPostAsRead($event)" :id="post.PostID" class="fas fa-bell"></i></span>
                 </div>
             </div>
             <hr>
@@ -54,7 +54,7 @@ export default {
             .sort((a, b) => new Date(b.DateTime) - new Date(a.DateTime))
             .concat(this.sortPostsFromCurrentUser)
         },
-        currentLogedInUser() {
+        logedInUser() {
             return sessionStorage.getItem('userId')
         },
         getLocalStorage() {
@@ -127,8 +127,8 @@ export default {
                 alert(err)
             }))
         },
-        like($event) {
-            axios.post('http://localhost:3000/api/post/like', { postId: $event.target.id,  userId: sessionStorage.getItem('userId')}, {
+        likePost($event) {
+            axios.post('http://localhost:3000/api/post/likepost', { postId: $event.target.id,  userId: sessionStorage.getItem('userId')}, {
             headers: {
                     'Authorization': `Bearer ${sessionStorage.getItem('token')}`,
                     'Content-Type': 'application/json'  
@@ -147,8 +147,8 @@ export default {
                 alert(err)
             }))
         },
-        dislike($event) {
-            axios.post('http://localhost:3000/api/post/dislike', { postId: $event.target.id,  userId: sessionStorage.getItem('userId')}, {
+        dislikePost($event) {
+            axios.post('http://localhost:3000/api/post/dislikepost', { postId: $event.target.id,  userId: sessionStorage.getItem('userId')}, {
             headers: {
                     'Authorization': `Bearer ${sessionStorage.getItem('token')}`,
                     'Content-Type': 'application/json'  
@@ -167,7 +167,7 @@ export default {
                 alert(err)
             }))
         },
-        deleteLike($event) {
+        deleteLikePost($event) {
             axios.delete('http://localhost:3000/api/post/deletelikepost/' + $event.target.id + '/' + sessionStorage.getItem('userId'), {
                 headers: {
                     Authorization: `Bearer ${sessionStorage.getItem('token')}`
@@ -185,7 +185,7 @@ export default {
                 alert(err)
             }))
         },
-        deleteDislike($event) {
+        deleteDislikePost($event) {
             axios.delete('http://localhost:3000/api/post/deletedislikepost/' + $event.target.id + '/' + sessionStorage.getItem('userId'), {
                 headers: {
                     Authorization: `Bearer ${sessionStorage.getItem('token')}`
@@ -246,7 +246,7 @@ hr {
     width: 100%;
 }
 
-h4 {
+h3 {
     font-style: italic;
 }
 

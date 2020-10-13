@@ -37,7 +37,6 @@ export default {
             }).then((response) => {
                 if (response.data.status === '200') {
                     this.userDetails = response.data.data[0]
-                    console.log(this.userDetails)
                 } else if (response.data.status === '401') {
                     alert(response.data.message)
                     this.$router.push('/')

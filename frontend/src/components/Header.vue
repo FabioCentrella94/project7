@@ -63,10 +63,10 @@ export default {
         a {
             color: white;
             text-decoration: none;
-            font-size: 2rem;
+            font-size: 2.2rem;
 
              @media only screen and (max-width: 460px) {
-                 font-size: 1rem;
+                 font-size: 1.3rem;
              }
 
             &.router-link-exact-active {

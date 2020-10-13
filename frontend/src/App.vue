@@ -1,10 +1,6 @@
 <template>
   <div id="app">
     <Header></Header>
-<<<<<<< HEAD
-    <LoginRegisterForm></LoginRegisterForm>
-    <Footer></Footer>
-=======
     <Login v-if="$route.name === 'login'" @logingIn="logedUser" :key="$route.fullPath"></Login>
     <Register v-if="$route.name === 'register'" @logingIn="logedUser" :key="$route.fullPath"></Register>
     <AddPost v-if="$route.name === 'addpost'"></AddPost>
@@ -14,38 +10,11 @@
     <EditPost v-if="$route.name === 'editpost'"></EditPost>
     <NotFound v-if="$route.name !== 'login' && $route.name !== 'register' && $route.name !== 'postlist' && $route.name !== 'singlepost' && $route.name !== 'addpost' && $route.name !== 'editpost' && $route.name !== 'profile'"></NotFound>
     <Footer v-if="$route.name !== 'postlist' && $route.name !== 'singlepost'"></Footer>
->>>>>>> e8cc3fc9295f8adb701f209b11b32b6bda15d99f
   </div>
 </template>
 
 <script>
 import Header from './components/Header';
-<<<<<<< HEAD
-import LoginRegisterForm from './components/LoginRegisterForm';
-import Footer from './components/Footer'
-
-export default {
-  name: 'App',
-  components: {
-    Header,
-    LoginRegisterForm,
-    Footer
-  },
-}
-</script>
-
-<style>
-
-#app {
-  display: flex;
-  justify-content: space-between;
-  flex-flow: column;
-  height: 100vh;
-}
-
-
-</style>
-=======
 import Footer from "./components/Footer";
 import Login from './components/Login';
 import Register from './components/Register';
@@ -97,4 +66,3 @@ a {
   color: inherit;
 }
 </style>
->>>>>>> e8cc3fc9295f8adb701f209b11b32b6bda15d99f

@@ -19,8 +19,7 @@ exports.uploadPost = (req, res, next) => {
 }
 
 exports.commentPost = (req, res, next) => {
-  let sql = 'INSERT INTO Comments (UserID, Comment, PostID, ParentID) VALUES ("'+req.body.userId+'", "'+req.body.comment+'", "'+req.params.postId+'", '+req.body.parentId+')'
-  db.query(sql, function (err, result, fields) {
+  db.query('SET foreign_key_checks = 0; INSERT INTO Comments (UserID, Comment, PostID, ParentID) VALUES ("'+req.body.userId+'", "'+req.body.comment+'", "'+req.params.postId+'", '+req.body.parentId+'); SET foreign_key_checks = 1', function (err, result, fields) {
     if (err) return res.json({
       status: err.status,
       message: err.sqlMessage,
@@ -74,32 +73,43 @@ exports.editPost = (req, res, next) => {
     })
 }
 
-exports.deleteSauce = (req, res, next) => {
-  Sauce.findOne({ _id: req.params.id }).then(sauce => {
-    const s3 = new AWS.S3()
-    const params = {
-      Bucket: 'sopekocko',
-      Key: sauce.imageUrl.replace(
-        'https://sopekocko.s3.eu-west-2.amazonaws.com/',
-        ''
-      )
-    }
-    s3.deleteObject(params, function (err, data) {
-      if (err) console.log(err, err.stack)
-      else console.log()
+exports.deletePost = (req, res, next) => {
+  let sqlSelect = 'SELECT * FROM Posts WHERE PostID = "'+req.params.postId+'";'
+    db.query(sqlSelect, function (err, result, fields) {
+      if (err) return res.json({
+        status: err.status,
+        message: err.sqlMessage,
+        data: err
+      })
+      const s3 = new AWS.S3()
+      const params = {
+        Bucket: 'sopekocko',
+        Key: result[0].ImageURL.replace(
+          'https://sopekocko.s3.eu-west-2.amazonaws.com/',
+          ''
+        )
+      }
+      s3.deleteObject(params, function (err, data) {
+        if (err) return res.json({
+          status: err.Code,
+          message: err.Message,
+          data: err
+        })
+      })
     })
-    Sauce.deleteOne(sauce)
-      .then(() => {
-        res.status(200).json({
-          message: 'Sauce deleted successfully!'
-        })
+    let sqlDelete = 'DELETE FROM Posts WHERE PostID = "'+req.params.postId+'";'
+    db.query(sqlDelete, function (err, result, fields) {
+      if (err) return res.json({
+        status: err.status,
+        message: err.sqlMessage,
+        data: err
       })
-      .catch(error => {
-        res.status(400).json({
-          error: error
-        })
+      res.json({
+        status: '200',
+        message: 'Post Deleted!',
+        data: null
       })
-  })
+    })
 }
 
 exports.getAllPosts = (req, res, next) => {
@@ -285,22 +295,6 @@ exports.getCommentsPost = (req, res, next) => {
     }
   })
 }
- 
-exports.getUserDetails = (req, res, next) => {
-  let sql = 'SELECT * FROM Users WHERE UserID = "'+req.params.userId+'";'
-  db.query(sql, function (err, result, fields) {
-    if (err) return res.json({
-      status: err.status,
-      message: err.sqlMessage,
-      data: err
-    })
-    res.json({
-      status: '200',
-      message: null,
-      data: result
-    })
-  })
-}
 
 exports.getAllLikesComments = (req, res, next) => {
   let sql = 'SELECT * FROM CommentLikes'
@@ -396,4 +390,36 @@ exports.deleteDislikeComment = (req, res, next) => {
       data: null
     })
   })
+}
+
+exports.deleteComment = (req, res, next) => {
+  let sql = 'DELETE FROM Comments WHERE CommentID = "'+req.params.commentId+'";'
+  db.query(sql, function (err, result, fields) {
+    if (err) return res.json({
+      status: err.status,
+      message: err.sqlMessage,
+      data: err
+    })
+    res.json({
+      status: '200',
+      message: 'Comment Deleted!',
+      data: null
+    })
+  })
+}
+
+exports.editComment = (req, res, next) => {
+  let sql = 'UPDATE Comments SET Comment = "'+req.body.comment+'" WHERE CommentID = "'+req.body.commentId+'";'
+    db.query(sql, function (err, result, fields) {
+      if (err) return res.json({
+        status: err.status,
+        message: err.sqlMessage,
+        data: err
+      })
+      res.json({
+        status: '200',
+        message: 'Comment Edited!',
+        data: null
+      })
+    })
 }

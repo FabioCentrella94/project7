@@ -56,6 +56,7 @@ login() {
           document.getElementById('loadingGif').setAttribute('hidden', true);
           document.getElementsByClassName('container')[0].removeAttribute('hidden')
           alert(response.data.message)
+          this.$store.commit('logout')
         } else {
           document.getElementById('loadingGif').setAttribute('hidden', true);
           document.getElementsByClassName('container')[0].removeAttribute('hidden')

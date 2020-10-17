@@ -2,7 +2,9 @@
     <div :key="componentKey">
         <div :style="{'padding-left': `${depth * 5}%`}">
             <h4 style="color: red;">{{ node.Username }}</h4>
-            <p style="color: black;">{{ node.Comment }}</p>
+            <div style="flex-flow: row; justify-content: space-around; align-items: center">
+                <p style="color: black;">{{ node.Comment }}</p>
+            </div>
             <div class="commentIconContainer">
                 <div style="width: 40%; display: flex; justify-content: space-between">
                     <span style="cursor: pointer" v-if="sortCommentsLikesCurrentUser.filter(s => s.CommentID === node.CommentID).length === 0 && sortCommentsDislikesCurrentUser.filter(s => s.CommentID === node.CommentID).length === 0"><i :id="node.CommentID" @click="likeComment($event)" class="far fa-thumbs-up"></i>{{ commentsLikes.filter(s => s.CommentID === node.CommentID).length }}</span>
@@ -14,14 +16,14 @@
                     <span :id="node.CommentID" style="cursor: pointer" @click="replyTo($event)">Reply</span>
                 </div>
                 <div class="singleposticons2" style="width: 25%;" v-if="node.UserID === logedInUser">
-                    <span style="color: white; cursor: pointer; text-decoration: none; background-color: crimson; border-radius: 10px; padding: 0.5% 5%;">
+                    <span :id="node.CommentID" @click="editComment($event)" style="color: white; cursor: pointer; text-decoration: none; background-color: crimson; border-radius: 10px; padding: 0.5% 5%;">
                         Edit
                     </span>
-                    <span style="cursor: pointer"><i :id="node.CommentID" class="fas fa-trash-alt"></i></span>
+                    <span style="cursor: pointer"><i @click="deleteComment" :id="node.CommentID" class="fas fa-trash-alt"></i></span>
                 </div>
             </div>
             <br>
-            <form style="display: none;">
+            <form class="formReply" style="display: none;">
                 <input style="margin-right: 3%" placeholder="Write a comment..." type="text" :name="node.CommentID" v-model="reply">
                 <button style="width: 15%" @click.prevent="sendReply($event)" type="submit"><i style="font-size: 20px;" class="far fa-comment-dots"></i></button>
             </form>
@@ -52,7 +54,8 @@ export default {
             componentKey: 0,
             reply: '',
             parentId: null,
-            expanded: false
+            expanded: false,
+            commentId: null,
         }
     },
     computed: {
@@ -90,7 +93,7 @@ export default {
                     this.commentsLikes = response.data.data
                 } else if (response.data.status === '401') {
                     alert(response.data.message)
-                    this.$router.push('/')
+                    this.$store.commit('logout')
                 } else {
                     alert(response.data.message)
                 }               
@@ -109,7 +112,7 @@ export default {
                     this.commentsDislikes = response.data.data
                 } else if (response.data.status === '401') {
                     alert(response.data.message)
-                    this.$router.push('/')
+                    this.$store.commit('logout')
                 } else {
                     alert(response.data.message)
                 }                   
@@ -129,7 +132,7 @@ export default {
                     this.getCommentsLikes()
                 } else if (response.data.status === '401') {
                     alert(response.data.message)
-                    this.$router.push('/')
+                    this.$store.commit('logout')
                 } else {
                     alert(response.data.message)
                 }      
@@ -149,7 +152,7 @@ export default {
                     this.getCommentsDislikes()
                 } else if (response.data.status === '401') {
                     alert(response.data.message)
-                    this.$router.push('/')
+                    this.$store.commit('logout')
                 } else {
                     alert(response.data.message)
                 } 
@@ -167,7 +170,7 @@ export default {
                     this.getCommentsLikes()
                 } else if (response.data.status === '401') {
                     alert(response.data.message)
-                    this.$router.push('/')
+                    this.$store.commit('logout')
                 } else {
                     alert(response.data.message)
                 } 
@@ -185,7 +188,7 @@ export default {
                     this.getCommentsDislikes()
                 } else if (response.data.status === '401') {
                     alert(response.data.message)
-                    this.$router.push('/')
+                    this.$store.commit('logout')
                 } else {
                     alert(response.data.message)
                 } 
@@ -194,6 +197,7 @@ export default {
             }))
         },
         replyTo($event) {
+            console.log(this.parentId)
             this.parentId = $event.target.id
             this.reply = ''
             let replyInput = document.getElementsByName($event.target.id)
@@ -213,7 +217,7 @@ export default {
             ).then((response) => {
                 if (response.data.status === '201') {
                     this.updateComments()
-                    let formComment = document.getElementsByTagName('form')
+                    let formComment = document.getElementsByClassName('formReply')
                     for (let i = 0; i < formComment.length; i++) {
                         formComment[i].style.display = 'none'
                     }
@@ -222,12 +226,10 @@ export default {
                     this.expanded = true
                 } else if (response.data.status === '401') {
                     alert(response.data.message)
-                    this.reply = ''
-                    this.parentId = null
-                    this.$router.push('/')
+                    this.$store.commit('logout')
                 } else {
                     alert(response.data.message)
-                    let formComment = document.querySelectorAll('form')
+                    let formComment = document.getElementsByClassName('formReply')
                     for (let i = 0; i < formComment.length; i++) {
                         formComment[i].style.display = 'none'
                     }
@@ -239,6 +241,76 @@ export default {
                 this.reply = ''
                 this.parentId = null
             }))
+        },
+        deleteComment($event) {
+            axios.delete('http://localhost:3000/api/post/deletecomment/' + $event.target.id, {
+                headers: {
+                    Authorization: `Bearer ${sessionStorage.getItem('token')}`
+                },
+            }).then((response) => {
+                if (response.data.status === '200') {
+                    this.updateComments()
+                } else if (response.data.status === '401') {
+                    alert(response.data.message)
+                    this.$store.commit('logout')
+                } else {
+                    alert(response.data.message)
+                } 
+            }).catch((err => {
+                alert(err)
+            }))
+        },
+        editComment($event) {
+            $event.target.style.display = 'none'
+            this.commentId = $event.target.id
+            let textComment = $event.target.parentElement.parentElement.parentElement.childNodes[1].childNodes[0].textContent
+            let textArea = document.createElement('textarea')
+            textArea.style.border = '1px solid grey'
+            $event.target.parentElement.parentElement.parentElement.childNodes[1].replaceChild(textArea, $event.target.parentElement.parentElement.parentElement.childNodes[1].childNodes[0])
+            textArea.value = textComment
+            textArea.style.width = '70%'
+            let editCommentButton = document.createElement('i')
+            editCommentButton.className = "fas fa-check"
+            editCommentButton.style.color = 'greenyellow'
+            editCommentButton.style.width = '10%'
+            editCommentButton.style.padding = '0 0'
+            editCommentButton.style.cursor = 'pointer'
+            editCommentButton.addEventListener('click', ($event) => {
+                axios.put('http://localhost:3000/api/post/editcomment', 
+            { 
+                commentId: this.commentId, 
+                comment: $event.target.parentElement.childNodes[0].value 
+            },
+            { headers: {
+                'Authorization': `Bearer ${sessionStorage.getItem('token')}`,
+                'Content-Type': 'application/json' 
+                }
+            }
+            ).then((response) => {
+                if (response.data.status === '200') {
+                    this.updateComments()
+                    this.forceRerender()
+                } else if (response.data.status === '401') {
+                    alert(response.data.message)
+                    this.$store.commit('logout')
+                } else {
+                    alert(response.data.message)
+                }
+            }).catch((err => {
+                alert(err)
+            }))
+            })
+            let cancelEditCommentButton = document.createElement('i')
+            cancelEditCommentButton.className = "fas fa-times"
+            cancelEditCommentButton.style.color = 'crimson'
+            cancelEditCommentButton.addEventListener('click', () => {
+                this.forceRerender('hello')
+            })
+            cancelEditCommentButton.style.cursor = 'pointer'
+            $event.target.parentElement.parentElement.parentElement.childNodes[1].style.display = 'flex'
+            $event.target.parentElement.parentElement.parentElement.childNodes[1].style.margin = '0 0 5% 0'
+            $event.target.parentElement.parentElement.parentElement.childNodes[1].insertBefore(editCommentButton, $event.target.parentElement.parentElement.parentElement.childNodes[1].childNodes[1])
+            $event.target.parentElement.parentElement.parentElement.childNodes[1].insertBefore(cancelEditCommentButton, $event.target.parentElement.parentElement.parentElement.childNodes[1].childNodes[2])
         },
         updateComments() {
             this.$emit('commentsUpdate')
@@ -260,6 +332,11 @@ export default {
     display: flex;
     flex-flow: row;
     justify-content: space-between;
+}
+
+.formReply > button {
+    padding:  0 0;
+    min-width: 50px;
 }
 
 </style>

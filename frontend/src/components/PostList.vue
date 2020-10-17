@@ -5,7 +5,7 @@
         </div>
         <div v-else class="imagetitlecontainer" v-for="post in sortPostsDifferentUser" :key="post.postID">
             <h3 style="color: crimson;">{{ post.Username }}</h3>
-            <h2>{{ post.Title }}</h2>
+            <h2 style="margin-bottom: 4%">{{ post.Title }}</h2>
             <img :src="post.ImageURL" alt="">
             <div class="iconcontainer">
                 <div :key="componentKey" class="icons1">
@@ -16,7 +16,7 @@
                     <span style="cursor: pointer" v-if="sortPostDislikesCurrentUser.filter(s => s.PostID === post.PostID).length === 1 && sortPostLikesCurrentUser.filter(s => s.PostID === post.PostID).length === 0"><i style="color: crimson" :id="post.PostID" @click="deleteDislikePost($event)" class="far fa-thumbs-down"></i>{{ postDislikes.filter(s => s.PostID === post.PostID).length }}</span>
                     <span v-if="sortPostLikesCurrentUser.filter(s => s.PostID === post.PostID).length === 1 && sortPostDislikesCurrentUser.filter(s => s.PostID === post.PostID).length === 0"><i style="opacity: 0.5;" class="far fa-thumbs-down"></i>{{ postDislikes.filter(s => s.PostID === post.PostID).length }}</span>
                     <router-link :to="{ name: 'singlepost', params: { postId: post.PostID }}">
-                        <span ><i class="far fa-comment-dots"></i></span>
+                        <span ><i @click="markPostAsRead($event)" class="far fa-comment-dots"></i></span>
                     </router-link>
                 </div>
                 <div @click="markPostAsRead($event)" :id="post.PostID" class="icons2">
@@ -81,7 +81,7 @@ export default {
                     this.posts = response.data.data
                 } else if (response.data.status === '401') {
                     alert(response.data.message)
-                    this.$router.push('/')
+                    this.$store.commit('logout')
                 } else {
                     alert(response.data.message)
                 }
@@ -100,7 +100,7 @@ export default {
                     this.postLikes = response.data.data
                 } else if (response.data.status === '401') {
                     alert(response.data.message)
-                    this.$router.push('/')
+                    this.$store.commit('logout')
                 } else {
                     alert(response.data.message)
                 }               
@@ -119,7 +119,7 @@ export default {
                     this.postDislikes = response.data.data
                 } else if (response.data.status === '401') {
                     alert(response.data.message)
-                    this.$router.push('/')
+                    this.$store.commit('logout')
                 } else {
                     alert(response.data.message)
                 }                   
@@ -139,7 +139,7 @@ export default {
                     this.getPostLikes()
                 } else if (response.data.status === '401') {
                     alert(response.data.message)
-                    this.$router.push('/')
+                    this.$store.commit('logout')
                 } else {
                     alert(response.data.message)
                 }      
@@ -159,7 +159,7 @@ export default {
                     this.getPostDislikes()
                 } else if (response.data.status === '401') {
                     alert(response.data.message)
-                    this.$router.push('/')
+                    this.$store.commit('logout')
                 } else {
                     alert(response.data.message)
                 } 
@@ -177,7 +177,7 @@ export default {
                     this.getPostLikes()
                 } else if (response.data.status === '401') {
                     alert(response.data.message)
-                    this.$router.push('/')
+                    this.$store.commit('logout')
                 } else {
                     alert(response.data.message)
                 } 
@@ -195,7 +195,7 @@ export default {
                     this.getPostDislikes()
                 } else if (response.data.status === '401') {
                     alert(response.data.message)
-                    this.$router.push('/')
+                    this.$store.commit('logout')
                 } else {
                     alert(response.data.message)
                 } 

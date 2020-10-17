@@ -17,7 +17,7 @@
                     <router-link style="color: white; cursor: pointer; text-decoration: none; background-color: crimson; border-radius: 10px; padding: 0.5% 5%;" :to="{ name: 'editpost', params: { postId: post.PostID }}">
                         Edit
                     </router-link>
-                    <span style="cursor: pointer" v-if="post.UserID === logedInUser"><i class="fas fa-trash-alt"></i></span>
+                    <span style="cursor: pointer" v-if="post.UserID === logedInUser"><i @click="deletePost" class="fas fa-trash-alt"></i></span>
                 </div>
             </div>
         </div>
@@ -80,7 +80,7 @@ export default {
                     this.$router.push('/notfound')
                 } else if (response.data.status === '401') {
                     alert(response.data.message)
-                    this.$router.push('/')
+                    this.$store.commit('logout')
                 } else {
                     alert(response.data.message)
                 }
@@ -99,7 +99,7 @@ export default {
                     this.postLikes = response.data.data
                 } else if (response.data.status === '401') {
                     alert(response.data.message)
-                    this.$router.push('/')
+                    this.$store.commit('logout')
                 } else {
                     alert(response.data.message)
                 }               
@@ -118,7 +118,7 @@ export default {
                     this.postDislikes = response.data.data
                 } else if (response.data.status === '401') {
                     alert(response.data.message)
-                    this.$router.push('/')
+                    this.$store.commit('logout')
                 } else {
                     alert(response.data.message)
                 }                   
@@ -138,7 +138,7 @@ export default {
                     this.getPostLikes()
                 } else if (response.data.status === '401') {
                     alert(response.data.message)
-                    this.$router.push('/')
+                    this.$store.commit('logout')
                 } else {
                     alert(response.data.message)
                 }      
@@ -158,7 +158,7 @@ export default {
                     this.getPostDislikes()
                 } else if (response.data.status === '401') {
                     alert(response.data.message)
-                    this.$router.push('/')
+                    this.$store.commit('logout')
                 } else {
                     alert(response.data.message)
                 } 
@@ -176,7 +176,7 @@ export default {
                     this.getPostLikes()
                 } else if (response.data.status === '401') {
                     alert(response.data.message)
-                    this.$router.push('/')
+                    this.$store.commit('logout')
                 } else {
                     alert(response.data.message)
                 } 
@@ -194,7 +194,7 @@ export default {
                     this.getPostDislikes()
                 } else if (response.data.status === '401') {
                     alert(response.data.message)
-                    this.$router.push('/')
+                    this.$store.commit('logout')
                 } else {
                     alert(response.data.message)
                 } 
@@ -213,7 +213,7 @@ export default {
                     this.comments = response.data.data
                 } else if (response.data.status === '401') {
                     alert(response.data.message)
-                    this.$router.push('/')
+                    this.$store.commit('logout')
                 } else {
                     alert(response.data.message)
                 }
@@ -235,9 +235,7 @@ export default {
                     this.parentId = 0
                 } else if (response.data.status === '401') {
                     alert(response.data.message)
-                    this.comment = ''
-                    this.parentId = 0
-                    this.$router.push('/')
+                    this.$store.commit('logout')
                 } else {
                     alert(response.data.message)
                     this.comment = ''
@@ -247,6 +245,24 @@ export default {
                 alert(err)
                 this.comment = ''
                 this.parentId = 0
+            }))
+        },
+        deletePost() {
+            axios.delete('http://localhost:3000/api/post/deletepost/' + this.$route.params.postId, {
+                headers: {
+                    Authorization: `Bearer ${sessionStorage.getItem('token')}`
+                },
+            }).then((response) => {
+                if (response.data.status === '200') {
+                    this.$router.push('/postlist')
+                } else if (response.data.status === '401') {
+                    alert(response.data.message)
+                    this.$store.commit('logout')
+                } else {
+                    alert(response.data.message)
+                } 
+            }).catch((err => {
+                alert(err)
             }))
         },
         forceRerender() {

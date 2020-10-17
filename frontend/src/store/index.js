@@ -17,6 +17,7 @@ export default new Vuex.Store({
     },
     logout() {
       sessionStorage.clear()
+      location.reload()
     }
   },
   actions: {

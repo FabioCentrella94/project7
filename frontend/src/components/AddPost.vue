@@ -67,7 +67,7 @@ export default {
                     this.$router.push('/postlist')
                 } else if (response.data.status === '401') {
                     alert(response.data.message)
-                    this.$router.push('/')
+                    this.$store.commit('logout')
                 } else {
                     document.getElementById('loadingGif').setAttribute('hidden', true);
                     document.getElementsByClassName('uploadContainer')[0].style.display = 'initial'

@@ -269,6 +269,13 @@ export default {
             $event.target.parentElement.parentElement.parentElement.childNodes[1].replaceChild(textArea, $event.target.parentElement.parentElement.parentElement.childNodes[1].childNodes[0])
             textArea.value = textComment
             textArea.style.width = '70%'
+            textArea.addEventListener('input', () => {
+                if (textArea.value.length < 1) {
+                    editCommentButton.style.display = 'none'
+            } else {
+                editCommentButton.style.display = 'inline'
+            }
+            })
             let editCommentButton = document.createElement('i')
             editCommentButton.className = "fas fa-check"
             editCommentButton.style.color = 'greenyellow'

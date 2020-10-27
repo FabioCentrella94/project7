@@ -229,9 +229,6 @@ export default {
                 } else {
                     alert(response.data.message)
                     let formComment = document.getElementsByClassName('formReply')
-                    for (let i = 0; i < formComment.length; i++) {
-                        formComment[i].style.display = 'none'
-                    }
                     this.reply = ''
                     this.parentId = null
                 }      

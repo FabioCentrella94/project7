@@ -291,6 +291,7 @@ export default {
                     alert(response.data.message)
                     this.comment = ''
                     this.parentId = 0
+                    this.forceRerender()
                 }      
             }).catch((err => {
                 alert(err)

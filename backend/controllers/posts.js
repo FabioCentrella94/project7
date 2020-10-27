@@ -19,7 +19,7 @@ exports.uploadPost = (req, res, next) => {
 }
 
 exports.commentPost = (req, res, next) => {
-  db.query('SET foreign_key_checks = 0; INSERT INTO Comments (UserID, Comment, PostID, ParentID) VALUES ("'+req.body.userId+'", "'+req.body.comment+'", "'+req.params.postId+'", '+req.body.parentId+'); SELECT Comments.CommentID, Comments.Comment, Comments.UserID, Comments.PostID, Comments.ParentID, Users.Username FROM Comments INNER JOIN Users On Comments.UserID = Users.UserID WHERE CommentID = LAST_INSERT_ID(); SET foreign_key_checks = 1;', function (err, result, fields) {
+  db.query('SET foreign_key_checks = 0; INSERT INTO Comments (UserID, Comment, PostID, ParentID) VALUES ("'+req.body.userId+'", "'+req.body.comment+'", "'+req.params.postId+'", "'+req.body.parentId+'"); SELECT Comments.CommentID, Comments.Comment, Comments.UserID, Comments.PostID, Comments.ParentID, Users.Username FROM Comments INNER JOIN Users On Comments.UserID = Users.UserID WHERE CommentID = LAST_INSERT_ID(); SET foreign_key_checks = 1;', function (err, result, fields) {
     if (err) return res.json({
       status: err.status,
       message: err.sqlMessage,

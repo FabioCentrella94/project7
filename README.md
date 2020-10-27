@@ -8,26 +8,27 @@ In order to test the app you must have node installed, if you don't have it foll
 
 1. Clone this repo; 
 
-2. Run the file:
+2. Go in backend/middleware/multer-config.js:
+
+    1.replace the value of 'secretAccessKey' with the value of the 'secretAccessKey' in the text file on OpenClassrooms Deliverables
+    2. replace the value of 'accessKeyId' with the value of the 'accessKeyId' in the text file on OpenClassrooms Deliverables
+
+3. Go in backend/dbConfig.js:
+
+    1.replace the value of 'user' with the value of the 'user' in the text file on OpenClassrooms Deliverables 
+    2. replace the value of 'password' with the value of the 'password' in the text file on OpenClassrooms Deliverables
+
+4. Run the file:
     1. `setup_windows.bat` if you are on Windows;
     2. `setup_mac_and_linux` if you are on Mac or Linux.
-
+        1. insert your Administrator password
 
 If you have any problems to run the files:
     1. open the terminal and run `npm install -g nodemon`;
     2. go in the frontend folder and run `npm install`;
     3. go in the backend folder and run `npm install`;
 
-On Mac and Linux in case of denied permission when running the commands use the word `sudo` before the command. Example `sudo npm install -g nodemon`.
-
-3. In GitHub click on settings, then on secrets and set the four secrets keys as environment variables in your system with the same name as they are displayed on github; otherwise:
-
-    1.go in backend/middleware/multer-config.js
-    2.replace the value of 'secretAccessKey' with the value of the secret AWS_S3_SECRET_ACCESS_KEY 
-    3. replace the value of 'accessKeyId' with the value of the secret AWS_S3_ACCESS_KEY_ID
-    4.go in backend/dbConfig.js
-    5.replace the value of 'user' with the value of the secret AWS_RDS_USER 
-    6. replace the value of 'password' with the value of the secret AWS_RDS_PASSWORD
+On Mac and Linux in case of denied permission when running the commands use the word `sudo` before the command. Example `sudo npm install -g nodemon` and insert your Administrator password.
 
 ## Usage ##
 

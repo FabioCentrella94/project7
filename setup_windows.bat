@@ -1,11 +1,11 @@
 @ECHO OFF
 
-START /wait npm install -g nodemon
+START npm install -g nodemon
 
 cd backend
-START /wait npm install
+START npm install
 
 cd ../frontend
-START /wait npm install
+START npm install
 
-EXIT /B
+EXIT 

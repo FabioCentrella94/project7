@@ -23,12 +23,12 @@
         </div>
         <hr>
         <div v-for="comment in comments" :key="comment.CommentID">
-            <Comments :node="comment" @commentsUpdate="getComments"></Comments>
+            <Comments :node="comment" @getLastComment="getLastComment" @getReply="getReply"></Comments>
         </div>
         <br>
         <form>
-            <input placeholder="Write a comment..." type="text" name="comment" v-model="comment">
-            <button @click.prevent="postComment" type="submit"><i style="font-size: 20px;" class="far fa-comment-dots"></i></button>
+            <input @input="validateComment($event)" placeholder="Write a comment..." type="text" name="comment" v-model="comment">
+            <button style="font-size: 20px; display: none" @click.prevent="postComment($event)" type="submit"><i style="font-size: 20px;" class="far fa-comment-dots"></i></button>
         </form>
     </div>
 </template>
@@ -50,7 +50,8 @@ export default {
             componentKey: 0,
             comment: '',
             comments: [],
-            parentId: 0
+            parentId: 0,
+            replyParentId: ''
         }
     },
     computed: {
@@ -221,7 +222,55 @@ export default {
                 alert(err)
             }))
         },
-        postComment() {
+        getReply(replyParentId) {
+            axios.get('http://localhost:3000/api/post/comments/' + this.$route.params.postId + '/' + replyParentId,
+            { headers:
+                {
+                'Authorization': `Bearer ${sessionStorage.getItem('token')}`, 
+                }
+            }).then((response) => {
+                if (response.data.status === '200') {   
+                    let parentComment = this.findById(this.comments, JSON.parse(replyParentId))
+                    setTimeout(() => { parentComment.children = response.data.data }, 50)
+                } else if (response.data.status === '401') {
+                    alert(response.data.message)
+                    this.$store.commit('logout')
+                } else {
+                    alert(response.data.message)
+                }
+            }).catch((err => {
+                alert(err)
+            }))
+        },
+        getLastComment(replyParentId) {
+            axios.get('http://localhost:3000/api/post/getlastcomment',
+            { headers:
+                {
+                'Authorization': `Bearer ${sessionStorage.getItem('token')}`, 
+                }
+            }).then((response) => {
+                if (response.data.status === '200') {
+                    console.log(this.comments)
+                    let parentComment = this.findById(this.comments, JSON.parse(replyParentId))
+                    setTimeout(() => { 
+                        if (!parentComment.children) {
+                            parentComment.children = response.data.data
+                        } else {
+                            parentComment.children = [...parentComment.children, response.data.data[0]] 
+                        }   
+                    }, 50)
+                } else if (response.data.status === '401') {
+                    alert(response.data.message)
+                    this.$store.commit('logout')
+                } else {
+                    alert(response.data.message)
+                }
+            }).catch((err => {
+                alert(err)
+            }))
+        },
+        postComment($event) {
+            $event.target.parentElement.style.display = 'none'
             axios.post('http://localhost:3000/api/post/comment/' + this.$route.params.postId, { userId: sessionStorage.getItem('userId'), comment: this.comment, parentId: this.parentId}, {
             headers: {
                     'Authorization': `Bearer ${sessionStorage.getItem('token')}`,
@@ -230,7 +279,9 @@ export default {
             },
             ).then((response) => {
                 if (response.data.status === '201') {
-                    this.getComments()
+                    for (let i = 0; i < response.data.data[2].length; i++) {
+                        this.comments.push(response.data.data[2][i])
+                    }
                     this.comment = ''
                     this.parentId = 0
                 } else if (response.data.status === '401') {
@@ -268,13 +319,32 @@ export default {
         forceRerender() {
             this.componentKey += 1;
         },
-    },
-        beforeMount() {
-            this.getSinglePost(),
-            this.getPostLikes(),
-            this.getPostDislikes()
-            this.getComments()
+        findById(data, id) {
+            const iter = (a) => {
+                if (a.CommentID === id) {
+                    result = a;
+                    return true;
+                }
+                return Array.isArray(a.children) && a.children.some(iter);
+            }
+            var result;
+            data.some(iter);
+            return result
         },
+        validateComment($event) {
+            if ($event.target.value.length < 1) {
+                $event.target.nextSibling.style.display = 'none'
+            } else {
+                $event.target.nextSibling.style.display = 'inline'
+            }
+        },
+    },
+    beforeMount() {
+        this.getSinglePost(),
+        this.getPostLikes(),
+        this.getPostDislikes()
+        this.getComments()
+    },
 }
 </script>
 

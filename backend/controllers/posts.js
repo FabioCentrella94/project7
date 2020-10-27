@@ -19,7 +19,7 @@ exports.uploadPost = (req, res, next) => {
 }
 
 exports.commentPost = (req, res, next) => {
-  db.query('SET foreign_key_checks = 0; INSERT INTO Comments (UserID, Comment, PostID, ParentID) VALUES ("'+req.body.userId+'", "'+req.body.comment+'", "'+req.params.postId+'", '+req.body.parentId+'); SET foreign_key_checks = 1', function (err, result, fields) {
+  db.query('SET foreign_key_checks = 0; INSERT INTO Comments (UserID, Comment, PostID, ParentID) VALUES ("'+req.body.userId+'", "'+req.body.comment+'", "'+req.params.postId+'", '+req.body.parentId+'); SELECT Comments.CommentID, Comments.Comment, Comments.UserID, Comments.PostID, Comments.ParentID, Users.Username FROM Comments INNER JOIN Users On Comments.UserID = Users.UserID WHERE CommentID = LAST_INSERT_ID(); SET foreign_key_checks = 1;', function (err, result, fields) {
     if (err) return res.json({
       status: err.status,
       message: err.sqlMessage,
@@ -28,7 +28,23 @@ exports.commentPost = (req, res, next) => {
     res.json({
       status: '201',
       message: 'Comment saved successfully!',
-      data: null
+      data: result
+    })
+  })
+}
+
+exports.getLastComment = (req, res, next) => {
+  db.query('SELECT Comments.CommentID, Comments.Comment, Comments.UserID, Comments.PostID, Comments.ParentID, Users.Username FROM Comments INNER JOIN Users On Comments.UserID = Users.UserID WHERE CommentID = LAST_INSERT_ID();', function (err, result, fields) {
+    if (err) return res.json({
+      status: err.status,
+      message: err.sqlMessage,
+      data: err
+    })
+    console.log(result)
+    res.json({
+      status: '200',
+      message: null,
+      data: result
     })
   })
 }
@@ -241,58 +257,34 @@ exports.deleteDislikePost = (req, res, next) => {
 }
 
 exports.getCommentsPost = (req, res, next) => {
-  let sql = 'SELECT Comments.CommentID, Comments.Comment, Comments.UserID, Comments.PostID, Comments.ParentID, Users.Username FROM Comments INNER JOIN Users On Comments.UserID = Users.UserID WHERE PostID = "'+req.params.postId+'"'
+  let sql = 'SELECT CommentID, Comment, PostID, ParentID, c.UserID, Users.Username, EXISTS(SELECT 1 FROM Comments r WHERE r.ParentID = c.CommentID) hasReply from Comments c INNER JOIN Users ON c.UserID = Users.UserID WHERE ParentID = 0 AND PostID = "'+req.params.postId+'";'
   db.query(sql, function (err, comments, fields) {
     if (err) return res.json({
       status: err.status,
       message: err.sqlMessage,
       error: err
     })
-    
-    if (comments.length !== 0) {
+    res.json({
+      status: '200',
+      message: null,
+      data: comments
+    })
+  })
+}
 
-      function hierarchySortFunc(a,b ) {
-        return a.name > b.name;
-      }
-    
-      function hierarhySort(hashArr, key, result) {
-        if (hashArr[key] == undefined) return;
-        let arr = hashArr[key].sort(hierarchySortFunc);
-        for (let i = 0; i < arr.length; i++) {
-          result.push(arr[i]);
-          hierarhySort(hashArr, arr[i].CommentID, result);
-        }
-        return result;
-      }
-    
-      var arr = comments
-    
-      var hashArr = {};
-    
-      for (let i = 0; i < arr.length; i++) {
-        if (hashArr[arr[i].ParentID] == undefined) hashArr[arr[i].ParentID] = [];
-        hashArr[arr[i].ParentID].push(arr[i]);
-      }
-    
-      let result = hierarhySort(hashArr, 0, []);
-    
-      const nest = (items, CommentID = 0, link = 'ParentID') =>
-      items
-        .filter(item => item[link] === CommentID)
-        .map(item => ({ ...item, children: nest(items, item.CommentID) }));
-    
-      res.json({
-        status: '200',
-        message: null,
-        data: nest(result)
-      })
-    } else {
-      res.json({
-        status: '200',
-        message: 'No comments',
-        data: null
-      })
-    }
+exports.getReply = (req, res, next) => {
+  let sql = 'SELECT CommentID, Comment, PostID, ParentID, c.UserID, Users.Username, EXISTS(SELECT 1 FROM Comments r WHERE r.ParentID = c.CommentID) hasReply from Comments c INNER JOIN Users ON c.UserID = Users.UserID WHERE PostID = "'+req.params.postId+'" AND ParentID = "'+req.params.replyParentId+'";'
+  db.query(sql, function (err, comments, fields) {
+    if (err) return res.json({
+      status: err.status,
+      message: err.sqlMessage,
+      error: err
+    })
+    res.json({
+      status: '200',
+      message: null,
+      data: comments
+    })
   })
 }
 

@@ -356,7 +356,6 @@ export default {
     padding: 20px 10px;
     margin: 0 auto auto auto;
     overflow: auto;
-    width: 0px;
     background: transparent;
     scrollbar-width: none;
 }

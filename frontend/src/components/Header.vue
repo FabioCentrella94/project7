@@ -42,7 +42,7 @@ export default {
   
     @media only screen and (max-width: 1024px) {
         flex-flow: column;
-        padding: 15px 15px 5px 15px;
+        padding: 20px 20px 20px 20px;
     }
 
     img {
@@ -63,7 +63,7 @@ export default {
         a {
             color: white;
             text-decoration: none;
-            font-size: 2.2rem;
+            font-size: 1.8rem;
 
              @media only screen and (max-width: 460px) {
                  font-size: 1.3rem;

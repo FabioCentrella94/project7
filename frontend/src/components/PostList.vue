@@ -1,5 +1,5 @@
 <template>
-    <div @scroll="handleScroll($event)" class="postcontainer" >
+    <div @scroll="handleScroll($event)" class="postcontainer" style="scrollbar-width: none;">
         <div v-if="sortPostsDifferentUser.length < 1">
             <h1>Start sharing your gif with the community</h1>
         </div>
@@ -299,6 +299,7 @@ h3 {
 ::-webkit-scrollbar {
     width: 0px;
     background: transparent;
+    scrollbar-width: none;
 }
 
 @media only screen and (min-width: 760px) {
@@ -309,7 +310,7 @@ h3 {
 
 @media only screen and (min-width: 1025px) {
   .postcontainer {
-    width: 50%;
+    width: 40%;
   }
 }
 

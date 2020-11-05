@@ -1,5 +1,5 @@
 <template>
-    <div  class="singlepostcontainer" >
+    <div class="singlepostcontainer" >
         <div class="singlepostimagecontainer">
             <h2>{{ post.Title }}</h2>
             <img :src="post.ImageURL" alt="">
@@ -268,7 +268,7 @@ export default {
                 alert(err)
             }))
         },
-        postComment() {
+        postComment($event) {
             axios.post('http://localhost:3000/api/post/comment/' + this.$route.params.postId, { userId: sessionStorage.getItem('userId'), comment: this.comment, parentId: this.parentId}, {
             headers: {
                     'Authorization': `Bearer ${sessionStorage.getItem('token')}`,
@@ -282,6 +282,7 @@ export default {
                     }
                     this.comment = ''
                     this.parentId = 0
+                    $event.target.parentElement.style.display = 'none'
                 } else if (response.data.status === '401') {
                     alert(response.data.message)
                     this.$store.commit('logout')
@@ -355,6 +356,9 @@ export default {
     padding: 20px 10px;
     margin: 0 auto auto auto;
     overflow: auto;
+    width: 0px;
+    background: transparent;
+    scrollbar-width: none;
 }
 
 .singlepostcontainer > form {

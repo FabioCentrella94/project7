@@ -204,6 +204,7 @@ button:disabled {
     display: flex;
     flex-flow: column;
     justify-content: space-between;
+    margin: 10% auto 10% auto;
 }
 
 .container > p {
@@ -221,13 +222,12 @@ button:disabled {
 @media only screen and (min-width: 461px) and (max-width: 1024px) {
   .container {
     width: 45%;
-    height: 100%;
   }
   .container > div {
-    font-size: 1.7em;
+    font-size: 1.5em;
   }
   input::-webkit-input-placeholder {
-    font-size: 1.7em;
+    font-size: 1.5em;
   }
 }
 

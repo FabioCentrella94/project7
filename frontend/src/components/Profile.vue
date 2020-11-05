@@ -84,7 +84,7 @@ export default {
 <style>
 
 #profileContainer {
-    margin: auto auto;
+    margin: 10% auto 10% auto;
 }
 
 #profileContainer > h2, p {
@@ -99,7 +99,7 @@ export default {
 
 @media only screen and (min-width: 461px) and (max-width: 1024px) {
     #profileContainer > * {
-        font-size: 1.6em;
+        font-size: 1.5em;
     }
     #containerYesNo > * {
         font-size: 1em;

@@ -25,8 +25,8 @@
             <br>
             <form class="formReply" style="display: none;">
                 <input @input="validateComment($event)" style="margin-right: 3%" placeholder="Write a comment..." type="text" :name="node.CommentID" v-model="reply">
-                <span style="display: none;" @click.prevent="sendReply(), getReply($event)">
-                    <button  type="submit"><i style="font-size: 20px;" class="far fa-comment-dots"></i></button>
+                <span style="display: none" @click.prevent="sendReply(), getReply($event)">
+                    <button><i style="font-size: 20px;" class="far fa-comment-dots"></i></button>
                 </span>
             </form>
             <br v-if="!expanded && hasReply === 1" style="display: none;">
@@ -341,21 +341,14 @@ export default {
             }
         },
         getReply($event) {
-            if ($event && !this.expanded && $event.target.parentElement.parentElement.parentElement.childNodes[6].tagName == 'SPAN') {
+            if ($event && !this.expanded) {
                 this.$emit('getReply', this.parentId)
-                $event.target.parentElement.parentElement.parentElement.childNodes[6].style.display = 'none'
                 setTimeout(() => { this.expanded = true }, 1000)
-                setTimeout(() => { $event.target.parentElement.parentElement.parentElement.parentElement.childNodes[1].lastChild.scrollIntoView() }, 1200)
-                $event.target.parentElement.style.display = 'none'
-            } else if ($event && !this.expanded && $event.target.parentElement.parentElement.parentElement.childNodes[6] == undefined ) {
-                this.$emit('getLastComment', this.parentId)
-                setTimeout(() => { this.expanded = true }, 1000)
-                setTimeout(() => { $event.target.parentElement.parentElement.parentElement.parentElement.childNodes[1].lastChild.scrollIntoView() }, 1200)           
+                setTimeout(() => { $event.target.parentElement.parentElement.parentElement.parentElement.parentElement.childNodes[1].lastElementChild.scrollIntoView() }, 1200)
             } else if ($event && this.expanded) {
                 this.$emit('getLastComment', this.parentId)
-                setTimeout(() => { this.forceRerender() }, 1000)
-                setTimeout(() => { $event.target.parentElement.parentElement.parentElement.parentElement.childNodes[1].lastChild.scrollIntoView() }, 999)           
-                $event.target.parentElement.style.display = 'none'
+                setTimeout(() => { this.forceRerender() }, 1200)
+                setTimeout(() => { $event.target.parentElement.parentElement.parentElement.parentElement.parentElement.childNodes[1].lastElementChild.scrollIntoView() }, 1000)           
             } else {
                 this.$emit('getReply', this.parentId)
                 setTimeout(() => { this.expanded = true }, 500)

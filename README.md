@@ -30,6 +30,8 @@ If you have any problems to run the files:
 
 On Mac and Linux in case of denied permission when running the commands use the word `sudo` before the command. Example `sudo npm install -g nodemon` and insert your Administrator password.
 
+On Windows 'npm install' in backend folder doesn't work if you have the project folder in OneDrive.
+
 ## Usage ##
 
 Run the file: 

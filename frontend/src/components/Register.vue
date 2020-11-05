@@ -1,21 +1,29 @@
 <template>
     <form>
         <img src="../assets/7plQ.gif" alt="" id="loadingGif" hidden>
-        <div class="container">
+        <div v-if="loggingIn == false" class="container">
+            
             <div>
                 <h1>Register</h1>
             </div>
-            <label for="username"><b>Username</b></label>
-            <input v-model="username" @blur="checkUserInput"  @input="checkUserInput($event); enableSubmitButton();" type="text" placeholder="Enter Username" name="username" pattern="^[a-zA-Z0-9]{1,15}$" required>
-            <p hidden>Invalid Input</p>
 
-            <label for="email"><b>Email</b></label>
-            <input v-model="email" @blur="checkUserInput"  @input="checkUserInput($event), enableSubmitButton()" type="text" placeholder="Enter Email" name="email" pattern="^\S[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$" required>
-            <p hidden>Invalid Input</p>
+            <div>
+              <label for="username"><b>Username</b></label>
+              <input v-model="username" @blur="checkUserInput"  @input="checkUserInput($event); enableSubmitButton();" type="text" placeholder="Enter Username" name="username" pattern="^[a-zA-Z0-9]{1,15}$" required>
+              <p hidden>Required Field! Only Numbers And Letters!</p>
+            </div>
 
-            <label for="password"><b>Password</b></label>
-            <input v-model="password" @blur="checkUserInput" @input="checkUserInput($event), enableSubmitButton()" type="password" placeholder="Enter Password" name="password" pattern="^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-])\S{8,}$" required>
-            <p hidden>Invalid Input</p>
+            <div>
+              <label for="email"><b>Email</b></label>
+              <input v-model="email" @blur="checkUserInput"  @input="checkUserInput($event), enableSubmitButton()" type="text" placeholder="Enter Email" name="email" pattern="^\S[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$" required>
+              <p hidden>Required Field! Match the E-Mail Format!</p>
+            </div>
+
+            <div>
+              <label for="password"><b>Password</b></label>
+              <input v-model="password" @blur="checkUserInput" @input="checkUserInput($event), enableSubmitButton()" type="password" placeholder="Enter Password" name="password" pattern="^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-])\S{8,}$" required>
+              <p hidden>Required Field! 1 Numbers, 1 Letter, 1 Symbol, 1 Uppercase, 1 Lowercase And At Least 8 digits!</p>
+            </div>
 
             <button type="submit" @click.prevent="register" disabled>Register</button>
         </div>
@@ -32,6 +40,7 @@ export default {
       username: '',
       email: '',
       password: '',
+      loggingIn: false
     }
   },
   methods: {
@@ -67,7 +76,7 @@ export default {
       }
     },
     register() {
-      document.getElementsByClassName('container')[0].setAttribute('hidden', true)
+      this.loggingIn = true
       document.getElementById('loadingGif').removeAttribute('hidden')
       axios.post('http://localhost:3000/api/auth/signup',
         {
@@ -82,27 +91,31 @@ export default {
         }
       ).then((response) => {
           if (response.data.status === '201') {
-            setTimeout(() => { this.login() }, 600)
+            setTimeout(() => { this.login() }, 1000)
           } else if (response.data.status === '409' && response.data.message === 'Username already used!' ) {
             document.getElementById('loadingGif').setAttribute('hidden', true);
-            document.getElementsByClassName('container')[0].removeAttribute('hidden')
+            this.loggingIn = false
             alert(response.data.message);
-            let usernameInput = document.getElementsByName('username')
-            usernameInput[0].style.borderColor = 'crimson';
+            setTimeout(() => {
+              let usernameInput = document.getElementsByName('username')
+              usernameInput[0].style.borderColor = 'crimson';
+            }, 400)
           } else if (response.data.status === '409' && response.data.message === 'Email already used!' ) {
             document.getElementById('loadingGif').setAttribute('hidden', true);
-            document.getElementsByClassName('container')[0].removeAttribute('hidden')
+            this.loggingIn = false
             alert(response.data.message);
-            let emailInput = document.getElementsByName('email')
-            emailInput[0].style.borderColor = 'crimson';
+            setTimeout(() => {
+              let emailInput = document.getElementsByName('email')
+              emailInput[0].style.borderColor = 'crimson';
+            }, 1000)
           } else {
             document.getElementById('loadingGif').setAttribute('hidden', true);
-            document.getElementsByClassName('container')[0].removeAttribute('hidden')
+            this.loggingIn = false
             alert(response.data.message)
           }
       }).catch((err => {
           document.getElementById('loadingGif').setAttribute('hidden', true);
-          document.getElementsByClassName('container')[0].removeAttribute('hidden')
+          this.loggingIn = false
           alert(err)
         })
       )
@@ -125,12 +138,12 @@ export default {
           this.$router.push("/postlist")
         } else {
           document.getElementById('loadingGif').setAttribute('hidden', true);
-          document.getElementsByClassName('container')[0].removeAttribute('hidden')
+          this.loggingIn = false
           alert(response.data.message)
         }
       }).catch((err => {
           document.getElementById('loadingGif').setAttribute('hidden', true);
-          document.getElementsByClassName('container')[0].removeAttribute('hidden')
+          this.loggingIn = false
           alert(err)
         })
       )
@@ -188,7 +201,9 @@ button:disabled {
     border-radius: 40px;
     padding: 20px;
     width: 25%;
-    margin: 2% 0;
+    display: flex;
+    flex-flow: column;
+    justify-content: space-between;
 }
 
 .container > p {
@@ -205,7 +220,14 @@ button:disabled {
 
 @media only screen and (min-width: 461px) and (max-width: 1024px) {
   .container {
-    width: 35%;
+    width: 45%;
+    height: 100%;
+  }
+  .container > div {
+    font-size: 1.7em;
+  }
+  input::-webkit-input-placeholder {
+    font-size: 1.7em;
   }
 }
 

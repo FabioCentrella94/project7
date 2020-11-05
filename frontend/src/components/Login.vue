@@ -1,7 +1,7 @@
 <template>
     <form>
         <img src="../assets/7plQ.gif" alt="" id="loadingGif" hidden>
-        <div class="container">
+        <div v-if="loggingIn == false" class="container">
             <div>
                 <h1>Login</h1>
             </div>
@@ -27,12 +27,13 @@ export default {
     return {
       username: '',
       password: '',
+      loggingIn: false
     }
   },
   methods: {
 login() {
-      document.getElementsByClassName('container')[0].setAttribute('hidden', true)
       document.getElementById('loadingGif').removeAttribute('hidden')
+      this.loggingIn = true
       axios.post('http://localhost:3000/api/auth/login',
         {
         username: this.username,
@@ -50,21 +51,21 @@ login() {
           this.$router.push("/postlist")
         } else if (response.data.status === '404') {
           document.getElementById('loadingGif').setAttribute('hidden', true);
-          document.getElementsByClassName('container')[0].removeAttribute('hidden')
+          this.loggingIn = false
           alert(response.data.message)
         } else if (response.data.status === '401') {
           document.getElementById('loadingGif').setAttribute('hidden', true);
-          document.getElementsByClassName('container')[0].removeAttribute('hidden')
+          this.loggingIn = false
           alert(response.data.message)
           this.$store.commit('logout')
         } else {
           document.getElementById('loadingGif').setAttribute('hidden', true);
-          document.getElementsByClassName('container')[0].removeAttribute('hidden')
+          this.loggingIn = false
           alert(response.data.message)
         }
       }).catch((err => {
           document.getElementById('loadingGif').setAttribute('hidden', true);
-          document.getElementsByClassName('container')[0].removeAttribute('hidden')
+          this.loggingIn = false
           alert(err)
         })
       )
@@ -140,6 +141,9 @@ button:disabled {
 @media only screen and (min-width: 461px) and (max-width: 1024px) {
   .container {
     width: 35%;
+  }
+  .container > label {
+  font-size: 1.7em;
   }
 }
 

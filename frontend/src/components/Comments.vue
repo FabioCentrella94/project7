@@ -16,7 +16,7 @@
                     <span :id="node.CommentID" style="cursor: pointer" @click="replyTo($event)">Reply</span>
                 </div>
                 <div class="singleposticons2" style="min-width: 35%;" v-if="node.UserID === logedInUser">
-                    <span :id="node.CommentID" @click="editComment($event)" style="color: white; cursor: pointer; text-decoration: none; background-color: crimson; border-radius: 10px; padding: 0.5% 5%;">
+                    <span :key="componentKeyEdit" :id="node.CommentID" @click="editComment($event)" style="color: white; cursor: pointer; text-decoration: none; background-color: crimson; border-radius: 10px; padding: 0.5% 5%;">
                         Edit
                     </span>
                     <span style="cursor: pointer"><i @click="deleteComment($event)" :id="node.CommentID" class="fas fa-trash-alt"></i></span>
@@ -25,7 +25,9 @@
             <br>
             <form class="formReply" style="display: none;">
                 <input @input="validateComment($event)" style="margin-right: 3%" placeholder="Write a comment..." type="text" :name="node.CommentID" v-model="reply">
-                <button style="width: 15%; display: none" @click.prevent="sendReply(), getReply($event)" type="submit"><i style="font-size: 20px;" class="far fa-comment-dots"></i></button>
+                <span style="display: none;" @click.prevent="sendReply(), getReply($event)">
+                    <button  type="submit"><i style="font-size: 20px;" class="far fa-comment-dots"></i></button>
+                </span>
             </form>
             <br v-if="!expanded && hasReply === 1" style="display: none;">
             <span :id="node.CommentID" style="cursor: pointer" @click="setParentId($event), getReply()" v-if="hasReply === 1 || node.children" class="type">{{ expanded ? '' : 'View Replies' }}</span>
@@ -57,7 +59,7 @@ export default {
             parentId: null,
             expanded: false,
             commentId: null,
-            edit: false
+            previousEditedComment: ''
         }
     },
     computed: {
@@ -228,7 +230,6 @@ export default {
                     this.$store.commit('logout')
                 } else {
                     alert(response.data.message)
-                    let formComment = document.getElementsByClassName('formReply')
                     this.reply = ''
                     this.parentId = null
                 }      
@@ -258,25 +259,22 @@ export default {
             }))
         },
         editComment($event) {
-            this.edit = true
-            if (this.edit === true) {
-                this.commentId = $event.target.id
-                let textComment = $event.target.parentElement.parentElement.parentElement.childNodes[1].childNodes[0].textContent
-                let textArea = document.createElement('textarea')
-                textArea.style.border = '1px solid grey'
-                $event.target.parentElement.parentElement.parentElement.childNodes[1].replaceChild(textArea, $event.target.parentElement.parentElement.parentElement.childNodes[1].childNodes[0])
-                textArea.value = textComment
-                textArea.style.width = '70%'
-                textArea.addEventListener('input', () => {
-                    if (textArea.value.length < 1) {
-                        editCommentButton.style.display = 'none'
-                    } else {
-                    editCommentButton.style.display = 'inline'
-                    }
-                })
-            } else {
-                this.forceRerenderEdit()
-            }
+            $event.target.style.display = 'none'
+            this.commentId = $event.target.id
+            this.previousEditedComment = $event.target.parentElement.parentElement.parentElement.childNodes[1].childNodes[0].textContent
+            let textComment = $event.target.parentElement.parentElement.parentElement.childNodes[1].childNodes[0].textContent
+            let textArea = document.createElement('textarea')
+            textArea.style.border = '1px solid grey'
+            $event.target.parentElement.parentElement.parentElement.childNodes[1].replaceChild(textArea, $event.target.parentElement.parentElement.parentElement.childNodes[1].childNodes[0])
+            textArea.value = textComment
+            textArea.style.width = '70%'
+            textArea.addEventListener('input', () => {
+                if (textArea.value.length < 1) {
+                    editCommentButton.style.display = 'none'
+                } else {
+                editCommentButton.style.display = 'inline'
+                }
+            })
             let editCommentButton = document.createElement('i')
             editCommentButton.className = "fas fa-check"
             editCommentButton.style.color = 'greenyellow'
@@ -298,12 +296,14 @@ export default {
                 if (response.data.status === '200') {
                     let editedComment = $event.target.parentElement.childNodes[0].value
                     let newComment = document.createElement('p')
-                    let newCommentContainer = document.createElement('div')
                     newComment.style.color ='black'
                     newComment.style.fontWeight ='normal'
-                    $event.target.parentElement.style.display = 'none'
+                    $event.target.parentElement.childNodes[1].style.display = 'none'
+                    $event.target.parentElement.childNodes[2].style.display = 'none'
+                    $event.target.parentElement.style.display = 'inline'
                     newComment.textContent = editedComment
-                    $event.target.parentElement.parentElement.childNodes[0].appendChild(newCommentContainer).appendChild(newComment)
+                    $event.target.parentElement.parentElement.childNodes[1].replaceChild(newComment, $event.target.parentElement.parentElement.childNodes[1].childNodes[0])
+                    $event.target.parentElement.parentElement.childNodes[2].childNodes[1].childNodes[0].style.display = 'inline'
                 } else if (response.data.status === '401') {
                     alert(response.data.message)
                     this.$store.commit('logout')
@@ -318,7 +318,14 @@ export default {
             cancelEditCommentButton.className = "fas fa-times"
             cancelEditCommentButton.style.color = 'crimson'
             cancelEditCommentButton.addEventListener('click', () => {
-                this.forceRerenderEdit()
+                let previousComment = document.createElement('p')
+                previousComment.style.color = 'black'
+                previousComment.textContent = this.previousEditedComment
+                $event.target.parentElement.parentElement.parentElement.childNodes[1].replaceChild(previousComment, $event.target.parentElement.parentElement.parentElement.childNodes[1].childNodes[0])
+                $event.target.parentElement.parentElement.parentElement.childNodes[1].childNodes[1].style.display = 'none'
+                $event.target.parentElement.parentElement.parentElement.childNodes[1].childNodes[2].style.display = 'none'
+                $event.target.parentElement.parentElement.parentElement.childNodes[2].childNodes[1].childNodes[0].style.display = 'inline'
+                $event.target.parentElement.parentElement.parentElement.childNodes[1].style.display = 'inline'
             })
             cancelEditCommentButton.style.cursor = 'pointer'
             $event.target.parentElement.parentElement.parentElement.childNodes[1].style.display = 'flex'
@@ -337,22 +344,21 @@ export default {
             if ($event && !this.expanded && $event.target.parentElement.parentElement.parentElement.childNodes[6].tagName == 'SPAN') {
                 this.$emit('getReply', this.parentId)
                 $event.target.parentElement.parentElement.parentElement.childNodes[6].style.display = 'none'
-                setTimeout(() => { this.expanded = true }, 500)
-                setTimeout(() => { $event.target.parentElement.parentElement.parentElement.parentElement.childNodes[1].lastChild.scrollIntoView() }, 700)
+                setTimeout(() => { this.expanded = true }, 1000)
+                setTimeout(() => { $event.target.parentElement.parentElement.parentElement.parentElement.childNodes[1].lastChild.scrollIntoView() }, 1200)
                 $event.target.parentElement.style.display = 'none'
             } else if ($event && !this.expanded && $event.target.parentElement.parentElement.parentElement.childNodes[6] == undefined ) {
                 this.$emit('getLastComment', this.parentId)
-                setTimeout(() => { this.expanded = true }, 500)
-                setTimeout(() => { $event.target.parentElement.parentElement.parentElement.parentElement.childNodes[1].lastChild.scrollIntoView() }, 700)           
+                setTimeout(() => { this.expanded = true }, 1000)
+                setTimeout(() => { $event.target.parentElement.parentElement.parentElement.parentElement.childNodes[1].lastChild.scrollIntoView() }, 1200)           
             } else if ($event && this.expanded) {
                 this.$emit('getLastComment', this.parentId)
-                setTimeout(() => { this.forceRerender() }, 500)
-                setTimeout(() => { $event.target.parentElement.parentElement.parentElement.parentElement.childNodes[1].lastChild.scrollIntoView() }, 499)           
+                setTimeout(() => { this.forceRerender() }, 1000)
+                setTimeout(() => { $event.target.parentElement.parentElement.parentElement.parentElement.childNodes[1].lastChild.scrollIntoView() }, 999)           
                 $event.target.parentElement.style.display = 'none'
             } else {
                 this.$emit('getReply', this.parentId)
                 setTimeout(() => { this.expanded = true }, 500)
-                setTimeout(() => { this.forceRerender()}, 600)
             }
         },
         setParentId($event) {

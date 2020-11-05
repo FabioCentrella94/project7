@@ -303,13 +303,13 @@ h3 {
 
 @media only screen and (min-width: 760px) {
   .postcontainer {
-    width: 45%;
+    width: 70%;
   }
 }
 
 @media only screen and (min-width: 1025px) {
   .postcontainer {
-    width: 35%;
+    width: 50%;
   }
 }
 

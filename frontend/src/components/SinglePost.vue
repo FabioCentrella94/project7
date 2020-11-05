@@ -250,7 +250,6 @@ export default {
                 }
             }).then((response) => {
                 if (response.data.status === '200') {
-                    console.log(this.comments)
                     let parentComment = this.findById(this.comments, JSON.parse(replyParentId))
                     setTimeout(() => { 
                         if (!parentComment.children) {
@@ -269,8 +268,7 @@ export default {
                 alert(err)
             }))
         },
-        postComment($event) {
-            $event.target.parentElement.style.display = 'none'
+        postComment() {
             axios.post('http://localhost:3000/api/post/comment/' + this.$route.params.postId, { userId: sessionStorage.getItem('userId'), comment: this.comment, parentId: this.parentId}, {
             headers: {
                     'Authorization': `Bearer ${sessionStorage.getItem('token')}`,

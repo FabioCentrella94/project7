@@ -40,7 +40,6 @@ exports.getLastComment = (req, res, next) => {
       message: err.sqlMessage,
       data: err
     })
-    console.log(result)
     res.json({
       status: '200',
       message: null,

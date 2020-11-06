@@ -10,21 +10,21 @@
             <div>
               <label for="username"><b>Username</b></label>
               <input v-model="username" @blur="checkUserInput"  @input="checkUserInput($event); enableSubmitButton();" type="text" placeholder="Enter Username" name="username" pattern="^[a-zA-Z0-9]{1,15}$" required>
-              <p hidden>Required Field! Only Numbers And Letters!</p>
+              <p style="text-align: center; font-size: 14px" hidden>Required Field! Only Numbers And Letters!</p>
             </div>
 
             <div>
               <label for="email"><b>Email</b></label>
               <input v-model="email" @blur="checkUserInput"  @input="checkUserInput($event), enableSubmitButton()" type="text" placeholder="Enter Email" name="email" pattern="^\S[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$" required>
-              <p hidden>Required Field! Match the E-Mail Format!</p>
+              <p style="text-align: center; font-size: 14px" hidden>Required Field! Match the E-Mail Format!</p>
             </div>
 
             <div>
               <label for="password"><b>Password</b></label>
               <input v-model="password" @blur="checkUserInput" @input="checkUserInput($event), enableSubmitButton()" type="password" placeholder="Enter Password" name="password" pattern="^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-])\S{8,}$" required>
-              <p hidden>Required Field! 1 Numbers, 1 Letter, 1 Symbol, 1 Uppercase, 1 Lowercase And At Least 8 digits!</p>
+              <p style="text-align: center; font-size: 14px" hidden>Required Field! 1 Numbers, 1 Letter, 1 Symbol, 1 Uppercase, 1 Lowercase And At Least 8 digits!</p>
             </div>
-
+            <br>
             <button type="submit" @click.prevent="register" disabled>Register</button>
         </div>
     </form>
@@ -155,6 +155,10 @@ export default {
 
 <style>
 
+label {
+  margin-top: 10px
+}
+
 h1 {
   text-align: center;
 }
@@ -167,7 +171,7 @@ form {
 input[type=text], input[type=password], input:focus {
   width: 100%;
   padding: 12px 20px;
-  margin: 10px 0;
+  margin: 10px 0 0 0;
   display: inline-block;
   border: 3px solid #ccc;
   box-sizing: border-box;
@@ -180,7 +184,7 @@ button, button:active {
   background-color: crimson;
   color: white;
   padding: 14px 20px;
-  margin: 8px 0;
+  margin: 8px 0 0 0;
   border: none;
   cursor: pointer;
   width: 100%;
@@ -210,6 +214,10 @@ button:disabled {
 .container > p {
   text-align: center;
   color: crimson;
+}
+
+.container > div {
+  margin-top: 5px;
 }
 
 @media only screen and (max-width: 460px) {

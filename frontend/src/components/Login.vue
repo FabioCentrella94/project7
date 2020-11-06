@@ -12,7 +12,7 @@
             <label for="password"><b>Password</b></label>
             <input v-model="password" type="password" placeholder="Enter Password" name="password" pattern="^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-])\S{8,}$" required>
             <p hidden>Invalid Input</p>
-
+            <br>
             <button type="submit" @click.prevent="login">Login</button>
         </div>
     </form>
@@ -145,6 +145,11 @@ button:disabled {
   .container > label {
   font-size: 1.7em;
   }
+}
+
+br {
+  display: static;
+  margin: 5% 0;
 }
 
 </style>

@@ -42,7 +42,7 @@ export default {
   
     @media only screen and (max-width: 1024px) {
         flex-flow: column;
-        padding: 16px 16px 16px 16px;
+        padding: 2% 2%;
     }
 
     img {
@@ -69,11 +69,15 @@ export default {
                  font-size: 1.3rem;
              }
 
+            @media only screen and (max-width: 360px) {
+                font-size: 1rem;
+             }
+
             &.router-link-exact-active {
                 background-color: white;
                 color: crimson;
                 border-radius: 50px;
-                padding: 0.5% 2%;
+                padding: 2%% 3%;
                 opacity: 1;
             }
 

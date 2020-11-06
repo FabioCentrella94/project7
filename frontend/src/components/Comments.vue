@@ -16,7 +16,7 @@
                     <span :id="node.CommentID" style="cursor: pointer" @click="replyTo($event)">Reply</span>
                 </div>
                 <div class="singleposticons2" style="min-width: 35%;" v-if="node.UserID === logedInUser">
-                    <span :key="componentKeyEdit" :id="node.CommentID" @click="editComment($event)" style="color: white; cursor: pointer; text-decoration: none; background-color: crimson; border-radius: 10px; padding: 0.5% 5%;">
+                    <span :key="componentKeyEdit" :id="node.CommentID" @click="editComment($event)" style="color: white; cursor: pointer; text-decoration: none; background-color: crimson; border-radius: 10px; padding: 3% 5%;">
                         Edit
                     </span>
                     <span style="cursor: pointer"><i @click="deleteComment($event)" :id="node.CommentID" class="fas fa-trash-alt"></i></span>
@@ -26,7 +26,7 @@
             <form class="formReply" style="display: none;">
                 <input @input="validateComment($event)" style="margin-right: 3%" placeholder="Write a comment..." type="text" :name="node.CommentID" v-model="reply">
                 <span style="display: none" @click.prevent="sendReply(), getReply($event)">
-                    <button><i style="font-size: 20px;" class="far fa-comment-dots"></i></button>
+                    <button style="display: inline"><i style="font-size: 20px;" class="far fa-comment-dots"></i></button>
                 </span>
             </form>
             <br v-if="!expanded && hasReply === 1" style="display: none;">
@@ -334,6 +334,7 @@ export default {
             $event.target.parentElement.parentElement.parentElement.childNodes[1].insertBefore(cancelEditCommentButton, $event.target.parentElement.parentElement.parentElement.childNodes[1].childNodes[2])
         },
         validateComment($event) {
+            console.log($event.target.nextSibling)
             if ($event.target.value.length < 1) {
                 $event.target.nextSibling.style.display = 'none'
             } else {
@@ -341,6 +342,7 @@ export default {
             }
         },
         getReply($event) {
+            $event.target.parentElement.style.display = 'none'
             if ($event && !this.expanded) {
                 this.$emit('getReply', this.parentId)
                 setTimeout(() => { this.expanded = true }, 1000)

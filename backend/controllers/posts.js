@@ -49,31 +49,46 @@ exports.getLastComment = (req, res, next) => {
 }
 
 exports.editPost = (req, res, next) => {
-  let sqlSelect = 'SELECT * FROM Posts WHERE PostID = "'+req.params.postId+'";'
-    db.query(sqlSelect, function (err, result, fields) {
-      if (err) return res.json({
-        status: err.status,
-        message: err.sqlMessage,
-        data: err
-      })
-      const s3 = new AWS.S3()
-      const params = {
-        Bucket: 'sopekocko',
-        Key: result[0].ImageURL.replace(
-          'https://sopekocko.s3.eu-west-2.amazonaws.com/',
-          ''
-        )
-      }
-      s3.deleteObject(params, function (err, data) {
+  if (req.file) {
+    let sqlSelect = 'SELECT * FROM Posts WHERE PostID = "'+req.params.postId+'";'
+      db.query(sqlSelect, function (err, result, fields) {
         if (err) return res.json({
-          status: err.Code,
-          message: err.Message,
+          status: err.status,
+          message: err.sqlMessage,
           data: err
         })
+        const s3 = new AWS.S3()
+        const params = {
+          Bucket: 'sopekocko',
+          Key: result[0].ImageURL.replace(
+            'https://sopekocko.s3.eu-west-2.amazonaws.com/',
+            ''
+          )
+        }
+        s3.deleteObject(params, function (err, data) {
+          if (err) return res.json({
+            status: err.Code,
+            message: err.Message,
+            data: err
+          })
+        })
       })
-    })
-    const fileName = 'https://sopekocko.s3.eu-west-2.amazonaws.com/' + req.file.key;
-    let sqlUpdate = 'UPDATE Posts SET Title = "'+req.body.title+'", ImageURL = "'+fileName+'" WHERE PostID = "'+req.params.postId+'";'
+      const fileName = 'https://sopekocko.s3.eu-west-2.amazonaws.com/' + req.file.key;
+      let sqlUpdate = 'UPDATE Posts SET Title = "'+req.body.title+'", ImageURL = "'+fileName+'" WHERE PostID = "'+req.params.postId+'";'
+      db.query(sqlUpdate, function (err, result, fields) {
+        if (err) return res.json({
+          status: err.status,
+          message: err.sqlMessage,
+          data: err
+        })
+        res.json({
+          status: '200',
+          message: 'Post Edited!',
+          data: null
+        })
+      })
+  } else {
+    let sqlUpdate = 'UPDATE Posts SET Title = "'+req.body.title+'" WHERE PostID = "'+req.params.postId+'";'
     db.query(sqlUpdate, function (err, result, fields) {
       if (err) return res.json({
         status: err.status,
@@ -86,6 +101,7 @@ exports.editPost = (req, res, next) => {
         data: null
       })
     })
+  }
 }
 
 exports.deletePost = (req, res, next) => {

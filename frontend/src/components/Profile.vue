@@ -85,6 +85,7 @@ export default {
 
 #profileContainer {
     margin: 10% auto 10% auto;
+    padding: 0 10%;
 }
 
 #profileContainer > h2, p {
@@ -95,6 +96,7 @@ export default {
     width: 50%;
     display: block;
     margin: 15% auto 0 auto;
+    min-width: 120px;
 }
 
 @media only screen and (min-width: 461px) and (max-width: 1024px) {

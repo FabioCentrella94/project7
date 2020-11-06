@@ -5,7 +5,7 @@
         </div>
         <div v-else class="imagetitlecontainer" v-for="post in sortPostsDifferentUser" :key="post.postID">
             <h3 style="color: crimson;">{{ post.Username }}</h3>
-            <h2 style="margin-bottom: 4%">{{ post.Title }}</h2>
+            <h2 style="margin-bottom: 4%; word-wrap:break-word;">{{ post.Title }}</h2>
             <img :src="post.ImageURL" alt="">
             <div class="iconcontainer">
                 <div :key="componentKey" class="icons1">
@@ -253,9 +253,10 @@ h3 {
 .postcontainer {
     display: flex;
     flex-flow: column;
-    padding: 20px 10px;
     margin: 0 auto auto auto;
-    overflow: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
+    width: 90%;
 }
 
 .iconcontainer {

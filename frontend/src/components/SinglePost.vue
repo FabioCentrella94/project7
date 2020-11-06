@@ -14,7 +14,7 @@
                     <span v-if="sortPostLikesCurrentUser.filter(s => s.PostID === post.PostID).length === 1 && sortPostDislikesCurrentUser.filter(s => s.PostID === post.PostID).length === 0"><i style="opacity: 0.5;" class="far fa-thumbs-down"></i>{{ postDislikes.filter(s => s.PostID === post.PostID).length }}</span>
                 </div>
                 <div class="singleposticons2" v-if="post.UserID === logedInUser">
-                    <router-link style="color: white; cursor: pointer; text-decoration: none; background-color: crimson; border-radius: 10px; padding: 0.5% 5%;" :to="{ name: 'editpost', params: { postId: post.PostID }}">
+                    <router-link style="color: white; cursor: pointer; text-decoration: none; background-color: crimson; border-radius: 10px; padding: 3% 5%;" :to="{ name: 'editpost', params: { postId: post.PostID }}">
                         Edit
                     </router-link>
                     <span style="cursor: pointer" v-if="post.UserID === logedInUser"><i @click="deletePost" class="fas fa-trash-alt"></i></span>
@@ -404,6 +404,10 @@ export default {
 
 .singlepostimagecontainer > img {
     width: 100%;
+}
+
+.singlepostimagecontainer > h2 {
+    margin-bottom: 5%;
 }
 
 @media only screen and (min-width: 760px) {

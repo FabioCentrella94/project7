@@ -220,6 +220,10 @@ button:disabled {
   margin-top: 5px;
 }
 
+.container:not(:root:root){ 
+    margin: 0 0 0 0 !important;
+}
+
 @media only screen and (max-width: 460px) {
   .container {
     width: 70%;

@@ -1,9 +1,9 @@
 <template>
     <div>
-        <div :key="componentKey" style="scroll-behavior: smooth;" :style="{'padding-left': `${depth * 5}%`}">
+        <div :key="componentKey" style="scroll-behavior: smooth; width: 80%" :style="{'padding-left': `${depth * 5}%`}">
             <h4 style="color: red;">{{ node.Username }}</h4>
             <div :key="componentKeyEdit" style="flex-flow: row; justify-content: space-around; align-items: center">
-                <p style="color: black;">{{ node.Comment }}</p>
+                <p style="word-wrap:break-word; color: black;">{{ node.Comment }}</p>
             </div>
             <div class="commentIconContainer">
                 <div style="min-width: 50%; display: flex; justify-content: space-between">
@@ -19,18 +19,16 @@
                     <span :key="componentKeyEdit" :id="node.CommentID" @click="editComment($event)" style="color: white; cursor: pointer; text-decoration: none; background-color: crimson; border-radius: 10px; padding: 3% 5%;">
                         Edit
                     </span>
-                    <span style="cursor: pointer"><i @click="deleteComment($event)" :id="node.CommentID" class="fas fa-trash-alt"></i></span>
+                    <span style="cursor: pointer; padding: 3% 0 0 0"><i @click="deleteComment($event)" :id="node.CommentID" class="fas fa-trash-alt"></i></span>
                 </div>
             </div>
             <br>
-            <form class="formReply" style="display: none;">
+            <form class="formReply" style="display: none; padding: 0 2% 0 2%">
                 <input @input="validateComment($event)" style="margin-right: 3%" placeholder="Write a comment..." type="text" :name="node.CommentID" v-model="reply">
-                <span style="display: none" @click.prevent="sendReply(), getReply($event)">
-                    <button style="display: inline"><i style="font-size: 20px;" class="far fa-comment-dots"></i></button>
-                </span>
+                <button style="display: none; width: 20%" @click.prevent="sendReply(), getReply($event)">...</button>
             </form>
             <br v-if="!expanded && hasReply === 1" style="display: none;">
-            <span :id="node.CommentID" style="cursor: pointer" @click="setParentId($event), getReply()" v-if="hasReply === 1 || node.children" class="type">{{ expanded ? '' : 'View Replies' }}</span>
+            <span :id="node.CommentID" style="cursor: pointer;" @click="setParentId($event), getReply()" v-if="hasReply === 1 || node.children" class="type">{{ expanded ? '' : 'View Replies' }}</span>
         </div>
         <div  v-if="expanded">
             <Comments
@@ -302,6 +300,7 @@ export default {
                     $event.target.parentElement.childNodes[2].style.display = 'none'
                     $event.target.parentElement.style.display = 'inline'
                     newComment.textContent = editedComment
+                    newComment.style.wordWrap = 'break-word'
                     $event.target.parentElement.parentElement.childNodes[1].replaceChild(newComment, $event.target.parentElement.parentElement.childNodes[1].childNodes[0])
                     $event.target.parentElement.parentElement.childNodes[2].childNodes[1].childNodes[0].style.display = 'inline'
                 } else if (response.data.status === '401') {
@@ -320,6 +319,7 @@ export default {
             cancelEditCommentButton.addEventListener('click', () => {
                 let previousComment = document.createElement('p')
                 previousComment.style.color = 'black'
+                previousComment.style.wordWrap = 'break-word'
                 previousComment.textContent = this.previousEditedComment
                 $event.target.parentElement.parentElement.parentElement.childNodes[1].replaceChild(previousComment, $event.target.parentElement.parentElement.parentElement.childNodes[1].childNodes[0])
                 $event.target.parentElement.parentElement.parentElement.childNodes[1].childNodes[1].style.display = 'none'
@@ -334,7 +334,6 @@ export default {
             $event.target.parentElement.parentElement.parentElement.childNodes[1].insertBefore(cancelEditCommentButton, $event.target.parentElement.parentElement.parentElement.childNodes[1].childNodes[2])
         },
         validateComment($event) {
-            console.log($event.target.nextSibling)
             if ($event.target.value.length < 1) {
                 $event.target.nextSibling.style.display = 'none'
             } else {
@@ -342,15 +341,17 @@ export default {
             }
         },
         getReply($event) {
-            $event.target.parentElement.style.display = 'none'
             if ($event && !this.expanded) {
                 this.$emit('getReply', this.parentId)
                 setTimeout(() => { this.expanded = true }, 1000)
-                setTimeout(() => { $event.target.parentElement.parentElement.parentElement.parentElement.parentElement.childNodes[1].lastElementChild.scrollIntoView() }, 1200)
+                setTimeout(() => { $event.target.parentElement.parentElement.parentElement.parentElement.parentElement.childNodes[1].childNodes[0].childNodes[1].lastElementChild.scrollIntoView() }, 1200)
+                $event.target.parentElement.style.display = 'none'
             } else if ($event && this.expanded) {
+                $event.target.parentElement.style.display = 'none'
                 this.$emit('getLastComment', this.parentId)
-                setTimeout(() => { this.forceRerender() }, 1200)
-                setTimeout(() => { $event.target.parentElement.parentElement.parentElement.parentElement.parentElement.childNodes[1].lastElementChild.scrollIntoView() }, 1000)           
+                setTimeout(() => { this.forceRerender() }, 1200)    
+                setTimeout(() => { $event.target.parentElement.parentElement.parentElement.parentElement.parentElement.childNodes[1].childNodes[0].childNodes[1].lastElementChild.scrollIntoView() }, 900)
+                $event.target.parentElement.style.display = 'none'
             } else {
                 this.$emit('getReply', this.parentId)
                 setTimeout(() => { this.expanded = true }, 500)

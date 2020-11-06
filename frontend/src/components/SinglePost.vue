@@ -1,7 +1,7 @@
 <template>
     <div class="singlepostcontainer" >
         <div class="singlepostimagecontainer">
-            <h2>{{ post.Title }}</h2>
+            <h2 style="word-wrap:break-word;">{{ post.Title }}</h2>
             <img :src="post.ImageURL" alt="">
             <hr>
             <div class="singleposticoncontainer">
@@ -17,18 +17,17 @@
                     <router-link style="color: white; cursor: pointer; text-decoration: none; background-color: crimson; border-radius: 10px; padding: 3% 5%;" :to="{ name: 'editpost', params: { postId: post.PostID }}">
                         Edit
                     </router-link>
-                    <span style="cursor: pointer" v-if="post.UserID === logedInUser"><i @click="deletePost" class="fas fa-trash-alt"></i></span>
+                    <span style="cursor: pointer; padding-top: 2%" v-if="post.UserID === logedInUser"><i @click="deletePost" class="fas fa-trash-alt"></i></span>
                 </div>
             </div>
+            <hr>
         </div>
-        <hr>
         <div v-for="comment in comments" :key="comment.CommentID">
             <Comments :node="comment" @getLastComment="getLastComment" @getReply="getReply"></Comments>
         </div>
-        <br>
-        <form>
+        <form style="padding: 3% 1% 7% 1%">
             <input @input="validateComment($event)" placeholder="Write a comment..." type="text" name="comment" v-model="comment">
-            <button style="font-size: 20px; display: none" @click.prevent="postComment($event)" type="submit"><i style="font-size: 20px;" class="far fa-comment-dots"></i></button>
+            <button style="font-size: 20px; display: none" @click.prevent="postComment($event)" type="submit">...</button>
         </form>
     </div>
 </template>
@@ -282,7 +281,7 @@ export default {
                     }
                     this.comment = ''
                     this.parentId = 0
-                    $event.target.parentElement.style.display = 'none'
+                    $event.target.style.display = 'none'
                 } else if (response.data.status === '401') {
                     alert(response.data.message)
                     this.$store.commit('logout')
@@ -353,11 +352,11 @@ export default {
 .singlepostcontainer {
     display: flex;
     flex-flow: column;
-    padding: 20px 10px;
     margin: 0 auto auto auto;
     overflow: auto;
     background: transparent;
     scrollbar-width: none;
+    width: 100%;
 }
 
 .singlepostcontainer > form {
@@ -382,6 +381,7 @@ export default {
 
 .singleposticoncontainer > * {
     font-size: 30px;
+    padding: 1% 0 0 0;
 }
 
 .singleposticons1 {
@@ -399,7 +399,8 @@ export default {
 }
 
 .singlepostimagecontainer {
-    width: 100%;
+    width: 90%;
+    padding: 20px 0 5px 15px;
 }
 
 .singlepostimagecontainer > img {

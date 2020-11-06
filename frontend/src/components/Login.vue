@@ -149,7 +149,7 @@ button:disabled {
 
 br {
   display: static;
-  margin: 5% 0;
+  margin: 0.5% 0;
 }
 
 </style>

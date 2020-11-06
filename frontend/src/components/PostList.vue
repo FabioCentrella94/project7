@@ -243,7 +243,7 @@ export default {
 <style>
 
 hr {
-    width: 100%;
+    width: 90%;
 }
 
 h3 {

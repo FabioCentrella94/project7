@@ -19,7 +19,7 @@
                     <span :key="componentKeyEdit" :id="node.CommentID" @click="editComment($event)" style="color: white; cursor: pointer; text-decoration: none; background-color: crimson; border-radius: 10px; padding: 3% 5%;">
                         Edit
                     </span>
-                    <span style="cursor: pointer; padding: 3% 0 0 0"><i @click="deleteComment($event)" :id="node.CommentID" class="fas fa-trash-alt"></i></span>
+                    <span style="cursor: pointer; padding: 2% 0 0 0"><i @click="deleteComment($event)" :id="node.CommentID" class="fas fa-trash-alt"></i></span>
                 </div>
             </div>
             <br>

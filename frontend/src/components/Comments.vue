@@ -1,12 +1,12 @@
 <template>
     <div>
-        <div :key="componentKey" style="scroll-behavior: smooth; width: 80%" :style="{'padding-left': `${depth * 5}%`}">
+        <div style="scroll-behavior: smooth; width: 80%" :style="{'padding-left': `${depth * 5}%`}">
             <h4 style="color: red;">{{ node.Username }}</h4>
             <div :key="componentKeyEdit" style="flex-flow: row; justify-content: space-around; align-items: center">
                 <p style="word-wrap:break-word; color: black;">{{ node.Comment }}</p>
             </div>
             <div class="commentIconContainer">
-                <div style="min-width: 50%; display: flex; justify-content: space-between">
+                <div :key="componentKey" style="min-width: 50%; display: flex; justify-content: space-between">
                     <span style="cursor: pointer" v-if="sortCommentsLikesCurrentUser.filter(s => s.CommentID === node.CommentID).length === 0 && sortCommentsDislikesCurrentUser.filter(s => s.CommentID === node.CommentID).length === 0"><i :id="node.CommentID" @click="likeComment($event)" class="far fa-thumbs-up"></i>{{ commentsLikes.filter(s => s.CommentID === node.CommentID).length }}</span>
                     <span style="cursor: pointer" v-if="sortCommentsLikesCurrentUser.filter(s => s.CommentID === node.CommentID).length === 1 && sortCommentsDislikesCurrentUser.filter(s => s.CommentID === node.CommentID).length === 0"><i style="color: yellowgreen" :id="node.CommentID" @click="deleteLikeComment($event)" class="far fa-thumbs-up"></i>{{ commentsLikes.filter(s => s.CommentID === node.CommentID).length }}</span>
                     <span v-if="sortCommentsDislikesCurrentUser.filter(s => s.CommentID === node.CommentID).length === 1 && sortCommentsLikesCurrentUser.filter(s => s.CommentID === node.CommentID).length === 0"><i style="opacity: 0.5;" class="far fa-thumbs-up"></i>{{ commentsLikes.filter(s => s.CommentID === node.CommentID).length }}</span>
@@ -343,18 +343,18 @@ export default {
         getReply($event) {
             if ($event && !this.expanded) {
                 this.$emit('getReply', this.parentId)
-                setTimeout(() => { this.expanded = true }, 1000)
-                setTimeout(() => { $event.target.parentElement.parentElement.parentElement.parentElement.parentElement.childNodes[1].childNodes[0].childNodes[1].lastElementChild.scrollIntoView() }, 1200)
+                setTimeout(() => { this.expanded = true }, 1500)
+                setTimeout(() => { $event.target.parentElement.parentElement.parentElement.parentElement.parentElement.childNodes[1].childNodes[0].childNodes[1].lastElementChild.scrollIntoView() }, 1700)
                 $event.target.parentElement.style.display = 'none'
             } else if ($event && this.expanded) {
-                $event.target.parentElement.style.display = 'none'
                 this.$emit('getLastComment', this.parentId)
-                setTimeout(() => { this.forceRerender() }, 1200)    
-                setTimeout(() => { $event.target.parentElement.parentElement.parentElement.parentElement.parentElement.childNodes[1].childNodes[0].childNodes[1].lastElementChild.scrollIntoView() }, 900)
+                $event.target.parentElement.style.display = 'none'
+                setTimeout(() => { this.forceRerender() }, 1500)    
+                setTimeout(() => { $event.target.parentElement.parentElement.parentElement.parentElement.parentElement.childNodes[1].childNodes[0].childNodes[1].lastElementChild.scrollIntoView() }, 1300)
                 $event.target.parentElement.style.display = 'none'
             } else {
                 this.$emit('getReply', this.parentId)
-                setTimeout(() => { this.expanded = true }, 500)
+                setTimeout(() => { this.expanded = true }, 1000)
             }
         },
         setParentId($event) {

@@ -9,7 +9,7 @@
 
             <div>
               <label for="username"><b>Username</b></label>
-              <input v-model="username" @blur="checkUserInput"  @input="checkUserInput($event); enableSubmitButton();" type="text" placeholder="Enter Username" name="username" pattern="^[a-zA-Z0-9]{1,15}$" required>
+              <input v-model="username" @blur="checkUserInput"  @input="checkUserInput($event); enableSubmitButton();" type="text" placeholder="Enter Username" name="username" pattern="^[a-zA-Z0-9]{1,}$" required>
               <p style="text-align: center; font-size: 14px" hidden>Required Field! Only Numbers And Letters!</p>
             </div>
 

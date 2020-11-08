@@ -30,7 +30,7 @@
             <br v-if="!expanded && hasReply === 1" style="display: none;">
             <span :id="node.CommentID" style="cursor: pointer;" @click="setParentId($event), getReply()" v-if="hasReply === 1 || node.children" class="type">{{ expanded ? '' : 'View Replies' }}</span>
         </div>
-        <div  v-if="expanded">
+        <div v-if="expanded">
             <Comments
                 v-on="$listeners"
                 v-for="child in node.children"
@@ -344,13 +344,13 @@ export default {
             if ($event && !this.expanded) {
                 this.$emit('getReply', this.parentId)
                 setTimeout(() => { this.expanded = true }, 1500)
-                setTimeout(() => { $event.target.parentElement.parentElement.parentElement.parentElement.parentElement.childNodes[1].childNodes[0].childNodes[1].lastElementChild.scrollIntoView() }, 1700)
+                setTimeout(() => { $event.target.parentElement.parentElement.parentElement.parentElement.childNodes[0].childNodes[1].lastElementChild.scrollIntoView() }, 1700)
                 $event.target.parentElement.style.display = 'none'
             } else if ($event && this.expanded) {
                 this.$emit('getLastComment', this.parentId)
                 $event.target.parentElement.style.display = 'none'
                 setTimeout(() => { this.forceRerender() }, 1500)    
-                setTimeout(() => { $event.target.parentElement.parentElement.parentElement.parentElement.parentElement.childNodes[1].childNodes[0].childNodes[1].lastElementChild.scrollIntoView() }, 1300)
+                setTimeout(() => { $event.target.parentElement.parentElement.parentElement.parentElement.childNodes[0].childNodes[1].lastElementChild.scrollIntoView() }, 1400)
                 $event.target.parentElement.style.display = 'none'
             } else {
                 this.$emit('getReply', this.parentId)

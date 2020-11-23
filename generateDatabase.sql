@@ -61,6 +61,7 @@ COLLATE = utf8mb4_0900_ai_ci;
 CREATE TABLE IF NOT EXISTS `Connect_E`.`Comments` (
   `CommentID` INT NOT NULL AUTO_INCREMENT,
   `ParentID` INT NOT NULL DEFAULT '0',
+  `ReplyTo` VARCHAR(15) NULL,
   `Comment` TEXT NOT NULL,
   `UserID` VARCHAR(64) NOT NULL,
   `PostID` VARCHAR(64) NOT NULL,

@@ -2,7 +2,7 @@
     <div id="profileContainer">
         <div style="margin-bottom: 15%" v-if="!deleteAccount">
             <h2>User ID</h2>
-            <p>{{ userDetails.UserID }}</p>
+            <p style="word-wrap:break-word;">{{ userDetails.UserID }}</p>
         </div>
         <div style="margin-bottom: 15%"  v-if="!deleteAccount">
             <h2>Username</h2>

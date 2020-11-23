@@ -9,7 +9,7 @@
 
             <div>
                 <label for="title"><b>Title</b></label>
-                <input v-model="title" @input="validateFileInput($event)" type="text" name="title" value="">
+                <input @input="validateFileInput($event)" type="text" name="title" value="">
             </div>
 
             <div class="uploadfilecontainer">
@@ -33,7 +33,6 @@ export default {
         return {
             post: [],
             userId: sessionStorage.getItem('userId'),
-            title: '',
             file: ''
         }
     },
@@ -51,12 +50,13 @@ export default {
             }
         },
         editPost() {
+            let title = document.getElementsByName('title')[0].value
             document.getElementsByClassName('uploadContainer')[0].style.display = 'none'
             document.getElementById('loadingGif').removeAttribute('hidden')
             let formData = new FormData();
             formData.append('file', this.file)
             formData.append('userId', this.userId)
-            formData.append('title', this.title)
+            formData.append('title', title)
             axios.put('http://localhost:3000/api/post/editpost/' + this.$route.params.postId, formData,
             { headers:
                 {

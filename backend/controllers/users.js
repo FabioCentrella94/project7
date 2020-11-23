@@ -2,6 +2,8 @@ const AWS = require('aws-sdk')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 let db = require('../dbConfig');
+let jwtConfig = require('../config')
+let jwtString = jwtConfig.jwtString
 
 exports.signup = (req, res, next) => {
   bcrypt.hash(req.body.password, 12).then(hash => {
@@ -60,7 +62,7 @@ exports.login = (req, res, next) => {
           }
           const token = jwt.sign(
             { userId: result[0].UserID },
-            'FKDAFJKA775JKJFDKAnfamnkjfka-fadfajkjfkadf89kfdka/fafak*kfdajkfjakjkfadfaduirueqir847jfancmnahjkfanvh12hj3hjfafkjfa',
+            jwtString,
             { expiresIn: '1h' }
           )
           res.json({

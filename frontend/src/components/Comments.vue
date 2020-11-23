@@ -1,7 +1,7 @@
 <template>
     <div>
         <div style="scroll-behavior: smooth; width: 80%" :style="{'padding-left': `${depth * 5}%`}">
-            <h4 style="color: red;">{{ node.Username }}</h4>
+            <h4 style="color: red; word-wrap: break-word;">{{ node.Username }}<span style="word-wrap: break-word;" v-if="node.ReplyTo !== undefined">{{ ' ' + '>' + ' ' + node.ReplyTo }}</span></h4>
             <div :key="componentKeyEdit" style="flex-flow: row; justify-content: space-around; align-items: center">
                 <p style="word-wrap:break-word; color: black;">{{ node.Comment }}</p>
             </div>
@@ -25,7 +25,7 @@
             <br>
             <form class="formReply" style="display: none; padding: 0 2% 0 2%">
                 <input @input="validateComment($event)" style="margin-right: 3%" placeholder="Write a comment..." type="text" :name="node.CommentID" v-model="reply">
-                <button style="display: none; width: 20%" @click.prevent="sendReply(), getReply($event)">...</button>
+                <button style="display: none; width: 20%" @click.prevent="sendReply($event), getReply($event)">...</button>
             </form>
             <br v-if="!expanded && hasReply === 1" style="display: none;">
             <span :id="node.CommentID" style="cursor: pointer;" @click="setParentId($event), getReply()" v-if="hasReply === 1 || node.children" class="type">{{ expanded ? '' : 'View Replies' }}</span>
@@ -36,7 +36,7 @@
                 v-for="child in node.children"
                 :key="child.CommentID"
                 :node="child"
-                :depth="depth + 1"
+                :depth="1"
             />
         </div>
     </div> 
@@ -208,8 +208,8 @@ export default {
             }
             replyInput[0].focus()
         },
-        sendReply() {
-            axios.post('http://localhost:3000/api/post/comment/' + this.$route.params.postId, { userId: sessionStorage.getItem('userId'), comment: this.reply, parentId: this.parentId}, {
+        sendReply($event) {
+            axios.post('http://localhost:3000/api/post/comment/' + this.$route.params.postId, { userId: sessionStorage.getItem('userId'), comment: this.reply, parentId: this.parentId, replyTo: $event.target.parentElement.parentElement.parentElement.childNodes[0].childNodes[0].textContent.split(" ").splice(0)[0]}, {
             headers: {
                     'Authorization': `Bearer ${sessionStorage.getItem('token')}`,
                     'Content-Type': 'application/json'  

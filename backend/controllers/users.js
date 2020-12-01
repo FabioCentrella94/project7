@@ -70,10 +70,7 @@ exports.login = (req, res, next) => {
             message: 'null',
             data: {
               userId: result[0].UserID,
-              email: result[0].Email,
-              token: token,
-              username: result[0].Username,
-              loginTime: result[0].LoginTime
+              token: token
             }
           })
         }).catch(err => {

@@ -54,5 +54,3 @@ Node Version: 12.18.1
 Issue: Nodemon gives error "not digitally signed" when trying to run command nodemon server.
 
 Solution: Run the command in command prompt not powershell.
-
-

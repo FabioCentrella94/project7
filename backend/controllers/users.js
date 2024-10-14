@@ -110,9 +110,9 @@ exports.deleteProfile = (req, res, next) => {
     const s3 = new AWS.S3()
     for (i = 0; i < result.length; i++) {
       const params = {
-        Bucket: 'sopekocko',
+        Bucket: 'connect-e',
         Key: result[i].ImageURL.replace(
-          'https://sopekocko.s3.eu-west-2.amazonaws.com/',
+          'https://connect-e.s3.eu-west-2.amazonaws.com/',
           ''
         )
       }

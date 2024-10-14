@@ -6,11 +6,11 @@
                 <h1>Login</h1>
             </div>
             <label for="username"><b>Username</b></label>
-            <input v-model="username" type="text" placeholder="Enter Username" name="username" pattern="^[a-zA-Z0-9]{1,15}$" required>
+            <input autocomplete="on" id="username" v-model="username" type="text" placeholder="Enter Username" name="username" pattern="^[a-zA-Z0-9]{1,15}$" required>
             <p hidden>Invalid Input</p>
 
             <label for="password"><b>Password</b></label>
-            <input v-model="password" type="password" placeholder="Enter Password" name="password" pattern="^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-])\S{8,}$" required>
+            <input id="password" v-model="password" type="password" placeholder="Enter Password" name="password" pattern="^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*\-])\S{8,}$" required>
             <p hidden>Invalid Input</p>
             <br>
             <button type="submit" @click.prevent="login">Login</button>

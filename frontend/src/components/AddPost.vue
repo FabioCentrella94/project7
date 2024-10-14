@@ -9,13 +9,13 @@
 
             <div>
                 <label for="title"><b>Title</b></label>
-                <input @input="validateFileInput($event)" v-model="title" type="text" name="title">
+                <input id="title" @input="validateFileInput($event)" v-model="title" type="text" name="title">
             </div>
 
             <div class="uploadfilecontainer">
                 <label for="file"><b>Upload your file</b></label>
                 <br>
-                <input accept="image/gif, image/jpeg, image/png" pattern="^.*\.(jpg|jpeg|png|gif)$" type="file" name="file" @change="validateFileInput($event), previewFile($event)">
+                <input id="file" accept="image/gif, image/jpeg, image/png" pattern="^.*\.(jpg|jpeg|png|gif)$" type="file" name="file" @change="validateFileInput($event), previewFile($event)">
                 <img id="imagepreview" />
             </div>
 

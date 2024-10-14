@@ -9,20 +9,20 @@
 
             <div>
               <label for="username"><b>Username</b></label>
-              <input v-model="username" @blur="checkUserInput"  @input="checkUserInput($event); enableSubmitButton();" type="text" placeholder="Enter Username" name="username" pattern="^[a-zA-Z0-9]{1,}$" required>
+              <input autocomplete="on" id="username" v-model="username" @blur="checkUserInput"  @input="checkUserInput($event); enableSubmitButton();" type="text" placeholder="Enter Username" name="username" pattern="^[a-zA-Z0-9]{1,}$" required>
               <p style="text-align: center; font-size: 14px" hidden>Required Field! Only Numbers And Letters!</p>
             </div>
 
             <div>
               <label for="email"><b>Email</b></label>
-              <input v-model="email" @blur="checkUserInput"  @input="checkUserInput($event), enableSubmitButton()" type="text" placeholder="Enter Email" name="email" pattern="^\S[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$" required>
+              <input autocomplete="on" id="email" v-model="email" @blur="checkUserInput"  @input="checkUserInput($event), enableSubmitButton()" type="text" placeholder="Enter Email" name="email" pattern="^\S[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,4}$" required>
               <p style="text-align: center; font-size: 14px" hidden>Required Field! Match the E-Mail Format!</p>
             </div>
 
             <div>
               <label for="password"><b>Password</b></label>
-              <input v-model="password" @blur="checkUserInput" @input="checkUserInput($event), enableSubmitButton()" type="password" placeholder="Enter Password" name="password" pattern="^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-])\S{8,}$" required>
-              <p style="text-align: center; font-size: 14px" hidden>Required Field! 1 Numbers, 1 Letter, 1 Symbol, 1 Uppercase, 1 Lowercase And At Least 8 digits!</p>
+              <input id="password" v-model="password" @blur="checkUserInput" @input="checkUserInput($event), enableSubmitButton()" type="password" placeholder="Enter Password" name="password" pattern="^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*\-])\S{8,}$" required>
+              <p style="text-align: center; font-size: 14px" hidden>Required Field! At Least 8 digits, 1 Numbers, 1 Letter, 1 Uppercase, 1 Lowercase and 1 Symbol (#?!@$%^&*-)</p>
             </div>
             <br>
             <button type="submit" @click.prevent="register" disabled>Register</button>
@@ -50,7 +50,7 @@ export default {
           $event.target.style.borderColor = 'greenyellow';
           $event.target.nextSibling.setAttribute('hidden', true)
         } else {
-          event.target.style.borderColor = 'red';
+          $event.target.style.borderColor = 'red';
           $event.target.nextSibling.removeAttribute('hidden')
         }
       }
@@ -218,10 +218,6 @@ button:disabled {
 
 .container > div {
   margin-top: 5px;
-}
-
-.container:not(:root:root){ 
-    margin: 0 0 0 0 !important;
 }
 
 @media only screen and (max-width: 460px) {

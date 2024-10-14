@@ -36,7 +36,7 @@
                 v-for="child in node.children"
                 :key="child.CommentID"
                 :node="child"
-                :depth="1"
+                :depth="depth + 1"
             />
         </div>
     </div> 

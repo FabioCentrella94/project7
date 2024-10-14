@@ -2,7 +2,7 @@ const AWS = require('aws-sdk')
 let db = require('../dbConfig');
 
 exports.uploadPost = (req, res, next) => {
-  const fileName = 'https://sopekocko.s3.eu-west-2.amazonaws.com/' + req.file.key;
+  const fileName = 'https://connect-e.s3.eu-west-2.amazonaws.com/' + req.file.key;
   let sql = 'INSERT INTO Posts (UserID, Title, ImageURL) VALUES ("'+req.body.userId+'", "'+req.body.title+'", "'+fileName+'")'
   db.query(sql, function (err, result, fields) {
     if (err) return res.json({
@@ -59,9 +59,9 @@ exports.editPost = (req, res, next) => {
         })
         const s3 = new AWS.S3()
         const params = {
-          Bucket: 'sopekocko',
+          Bucket: 'connect-e',
           Key: result[0].ImageURL.replace(
-            'https://sopekocko.s3.eu-west-2.amazonaws.com/',
+            'https://connect-e.s3.eu-west-2.amazonaws.com/',
             ''
           )
         }
@@ -73,7 +73,7 @@ exports.editPost = (req, res, next) => {
           })
         })
       })
-      const fileName = 'https://sopekocko.s3.eu-west-2.amazonaws.com/' + req.file.key;
+      const fileName = 'https://connect-e.s3.eu-west-2.amazonaws.com/' + req.file.key;
       let sqlUpdate = 'UPDATE Posts SET Title = "'+req.body.title+'", ImageURL = "'+fileName+'" WHERE PostID = "'+req.params.postId+'";'
       db.query(sqlUpdate, function (err, result, fields) {
         if (err) return res.json({
@@ -114,9 +114,9 @@ exports.deletePost = (req, res, next) => {
       })
       const s3 = new AWS.S3()
       const params = {
-        Bucket: 'sopekocko',
+        Bucket: 'connect-e',
         Key: result[0].ImageURL.replace(
-          'https://sopekocko.s3.eu-west-2.amazonaws.com/',
+          'https://connect-e.s3.eu-west-2.amazonaws.com/',
           ''
         )
       }
@@ -151,11 +151,36 @@ exports.getAllPosts = (req, res, next) => {
       message: err.sqlMessage,
       data: err
     })
-    res.json({
-      status: '200',
-      message: null,
-      data: result
-    })
+      
+    async function getSignedUrl(ImageURL){
+      return new Promise((resolve,reject) => {
+        const s3 = new AWS.S3()
+
+        let params = { Bucket: 'connect-e', Key: ImageURL.replace("https://connect-e.s3.eu-west-2.amazonaws.com/", ""), Expires: 3600};
+
+        s3.getSignedUrl('getObject', params, (err, url) => {
+          if (err) reject(err);
+          resolve(url);
+        })
+      })
+    }
+    
+    async function process(items) {
+      for (let item of items) {
+        const signedUrl = await getSignedUrl(item.ImageURL);
+        item.ImageURL = signedUrl;
+      }
+      return items;
+    }
+    
+    
+    process(result).then(newResult => {
+      res.json({
+        status: '200',
+        message: null,
+        data: newResult
+      })
+    });
   })
 }
 
@@ -167,6 +192,17 @@ exports.getSinglePost = (req, res, next) => {
       message: err.sqlMessage,
       data: err
     })
+
+    const s3 = new AWS.S3()
+
+    const url = s3.getSignedUrl('getObject', {
+      Bucket: 'connect-e',
+      Key: result[0].ImageURL.replace("https://connect-e.s3.eu-west-2.amazonaws.com/", ""),
+      Expires: 3600
+    });
+
+    result[0].ImageURL = url
+
     res.json({
       status: '200',
       message: null,

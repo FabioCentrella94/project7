@@ -2,7 +2,7 @@ require('dotenv').config()
 const mysql = require("mysql");
 
 let dbConfig = ({
-  host     : 'connecte.cxu3dbx5ys9k.eu-west-2.rds.amazonaws.com',
+  host     : 'project7.cxu3dbx5ys9k.eu-west-2.rds.amazonaws.com',
   user     : process.env.AWS_RDS_USER,
   password : process.env.AWS_RDS_PASSWORD,
   port     : '3306',

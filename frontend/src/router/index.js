@@ -1,98 +1,98 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-import Login from '../components/Login'
-import Register from '../components/Register'
-import AddPost from '../components/AddPost';
-import PostList from '../components/PostList';
-import Profile from '../components/Profile';
-import SinglePost from '../components/SinglePost';
-import EditPost from '../components/EditPost';
-import NotFound from '../components/NotFound';
+import Vue from "vue";
+import VueRouter from "vue-router";
+import Login from "../components/Login";
+import Register from "../components/Register";
+import AddPost from "../components/AddPost";
+import PostList from "../components/PostList";
+import Profile from "../components/Profile";
+import SinglePost from "../components/SinglePost";
+import EditPost from "../components/EditPost";
+import NotFound from "../components/NotFound";
 
-Vue.use(VueRouter)
+Vue.use(VueRouter);
 
 const routes = [
   {
-    path: '/',
-    name: 'login',
-    component: Login
+    path: "/",
+    name: "login",
+    component: Login,
   },
   {
-    path: '/register',
-    name: 'register',
-    component: Register
+    path: "/register",
+    name: "register",
+    component: Register,
   },
   {
-    path: '/addpost',
-    name: 'addpost',
+    path: "/addpost",
+    name: "addpost",
     component: AddPost,
     beforeEnter(to, from, next) {
-      if (sessionStorage.getItem('isLogedIn') !== null) {
+      if (sessionStorage.getItem("isLogedIn") !== null) {
         next();
       } else {
-        next('/');
+        next("/");
       }
-    }
+    },
   },
   {
-    path: '/postlist',
-    name: 'postlist',
+    path: "/postlist",
+    name: "postlist",
     component: PostList,
     beforeEnter(to, from, next) {
-      if (sessionStorage.getItem('isLogedIn') !== null) {
+      if (sessionStorage.getItem("isLogedIn") !== null) {
         next();
       } else {
-        next('/');
+        next("/");
       }
-    }
+    },
   },
   {
-    path: '/profile/:userId',
-    name: 'profile',
+    path: "/profile/:userId",
+    name: "profile",
     component: Profile,
     beforeEnter(to, from, next) {
-      if (sessionStorage.getItem('isLogedIn') !== null) {
+      if (sessionStorage.getItem("isLogedIn") !== null) {
         next();
       } else {
-        next('/');
+        next("/");
       }
-    }
+    },
   },
   {
-    path: '/singlepost/:postId',
-    name: 'singlepost',
+    path: "/singlepost/:postId",
+    name: "singlepost",
     component: SinglePost,
     beforeEnter(to, from, next) {
-      if (sessionStorage.getItem('isLogedIn') !== null) {
+      if (sessionStorage.getItem("isLogedIn") !== null) {
         next();
       } else {
-        next('/');
+        next("/");
       }
-    }
+    },
   },
   {
-    path: '/editpost/:postId',
-    name: 'editpost',
+    path: "/editpost/:postId",
+    name: "editpost",
     component: EditPost,
     beforeEnter(to, from, next) {
-      if (sessionStorage.getItem('isLogedIn') !== null) {
+      if (sessionStorage.getItem("isLogedIn") !== null) {
         next();
       } else {
-        next('/');
+        next("/");
       }
-    }
+    },
   },
   {
-    path :'*',
-    name: 'notfound',
-    component: NotFound
-  }
-]
+    path: "*",
+    name: "notfound",
+    component: NotFound,
+  },
+];
 
 const router = new VueRouter({
-  mode: 'history',
+  mode: "history",
   base: process.env.BASE_URL,
-  routes
-})
+  routes,
+});
 
-export default router
+export default router;

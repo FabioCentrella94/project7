@@ -1,17 +1,15 @@
 <template>
-    <h2>Page Not Found</h2>
+  <h2>Page Not Found</h2>
 </template>
 
 <script>
 export default {
-    name: 'NotFound'
-}
+  name: "NotFound",
+};
 </script>
 
 <style>
-
 h2 {
-    margin: auto auto;
+  margin: auto auto;
 }
-
 </style>

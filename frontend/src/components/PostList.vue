@@ -13,27 +13,27 @@
       v-for="post in sortPostsDifferentUser"
       :key="post.postID"
     >
-    <div style="display: flex; flex-flow: row; justify-content: space-between">
+      <div
+        style="display: flex; flex-flow: row; justify-content: space-between"
+      >
         <div>
-            <h3 style="color: crimson">{{ post.Username }}</h3>
-            <h2 style="margin-bottom: 4%; word-wrap: break-word">{{ post.Title }}</h2>
+          <h3 style="color: crimson">{{ post.Username }}</h3>
+          <h2 style="margin-bottom: 4%; word-wrap: break-word">
+            {{ post.Title }}
+          </h2>
         </div>
         <div class="iconcontainer">
-        <div :id="post.PostID" class="icons2">
-          <span
-            v-if="
-              post.UserID !== logedInUser &&
-              !getLocalStorage.hasOwnProperty(post.PostID)
-            "
-            ><i
-              :id="post.PostID"
-              class="fas fa-bell"
-            ></i
-          ></span>
+          <div :id="post.PostID" class="icons2">
+            <span
+              v-if="
+                post.UserID !== logedInUser &&
+                !getLocalStorage.hasOwnProperty(post.PostID)
+              "
+              ><i :id="post.PostID" class="fas fa-bell"></i
+            ></span>
+          </div>
         </div>
       </div>
-
-    </div>
 
       <router-link
         :to="{ name: 'singlepost', params: { postId: post.PostID } }"
@@ -102,6 +102,31 @@ export default {
     },
   },
   methods: {
+    // PRODUCTION ENVIRONMENT
+    /*
+    getPosts() {
+      axios
+        .get("https://project7-backend.myportfolio.training/api/post", {
+          headers: {
+            Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+          },
+        })
+        .then((response) => {
+          if (response.data.status === "200") {
+            this.posts = response.data.data;
+          } else if (response.data.status === "401") {
+            alert(response.data.message);
+            this.$store.commit("logout");
+          } else {
+            alert(response.data.message);
+          }
+        })
+        .catch((err) => {
+          alert(err);
+        });
+    },
+    */
+    // DEVELOPMENT ENVIRONMENT
     getPosts() {
       axios
         .get("http://localhost:3000/api/post", {
@@ -131,7 +156,7 @@ export default {
       for (let i = 0; i < postHeight.length; i++) {
         if (
           postHeight[i].getBoundingClientRect().bottom <
-          window.innerHeight - 420
+          window.innerHeight - 400
         ) {
           postHeight[i].style.visibility = "hidden";
           let readPost = localStorage.getItem(sessionStorage.getItem("userId"));
@@ -147,9 +172,29 @@ export default {
         }
       }
     },
+    checkPost() {
+      if (document.querySelectorAll(".icons2").length > 0) {
+        let postHeight = document.querySelectorAll(".icons2");
+
+        postHeight[0].style.visibility = "hidden";
+        let readPost = localStorage.getItem(sessionStorage.getItem("userId"));
+        readPost = JSON.parse(readPost);
+        readPost = {
+          ...readPost,
+          [postHeight[0].id]: postHeight[0].id,
+        };
+        localStorage.setItem(
+          sessionStorage.getItem("userId"),
+          JSON.stringify(readPost)
+        );
+      }
+    },
   },
   beforeMount() {
     this.getPosts();
+  },
+  updated() {
+    this.checkPost();
   },
 };
 </script>

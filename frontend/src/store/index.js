@@ -1,12 +1,10 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
+import Vue from "vue";
+import Vuex from "vuex";
 
-Vue.use(Vuex)
+Vue.use(Vuex);
 
 export default new Vuex.Store({
-  state: {
-    
-  },
+  state: {},
   mutations: {
     login(state, response) {
       sessionStorage.setItem("token", response.data.data.token);
@@ -14,12 +12,10 @@ export default new Vuex.Store({
       sessionStorage.setItem("isLogedIn", true);
     },
     logout() {
-      sessionStorage.clear()
-      location.reload()
-    }
+      sessionStorage.clear();
+      location.reload();
+    },
   },
-  actions: {
-  },
-  modules: {
-  }
-})
+  actions: {},
+  modules: {},
+});

@@ -63,7 +63,6 @@ export default {
       }
     },
     // PRODUCTION ENVIRONMENT
-    /*
     uploadFile() {
       document.getElementsByClassName("uploadContainer")[0].style.display =
         "none";
@@ -104,8 +103,8 @@ export default {
           alert(err);
         });
     },
-    */
     // DEVELOPMENT ENVIRONMENT
+    /*
     uploadFile() {
       document.getElementsByClassName("uploadContainer")[0].style.display =
         "none";
@@ -142,6 +141,7 @@ export default {
           alert(err);
         });
     },
+    */
     validateFileInput() {
       let inputElement = document.querySelectorAll("input");
       let submitButton = document.getElementsByTagName("button")[0];

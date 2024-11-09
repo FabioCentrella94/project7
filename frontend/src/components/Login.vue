@@ -49,7 +49,6 @@ export default {
   },
   methods: {
     // PRODUCTION ENVIRONMENT
-    /*
     login() {
       document.getElementById("loadingGif").removeAttribute("hidden");
       this.loggingIn = true;
@@ -93,8 +92,8 @@ export default {
           location.reload();
         });
     },
-    */
     // DEVELOPMENT ENVIRONMENT
+    /*
     login() {
       document.getElementById("loadingGif").removeAttribute("hidden");
       this.loggingIn = true;
@@ -138,6 +137,7 @@ export default {
           location.reload();
         });
     },
+    */
   },
 };
 </script>

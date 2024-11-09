@@ -1,5 +1,4 @@
 // PRODUCTION ENVIRONMENT
-/*
 const {
   SecretsManagerClient,
   GetSecretValueCommand,
@@ -31,4 +30,3 @@ async function fetchSecret() {
 }
 
 module.exports.fetchSecret = fetchSecret;
-*/

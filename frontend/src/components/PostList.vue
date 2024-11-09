@@ -103,7 +103,6 @@ export default {
   },
   methods: {
     // PRODUCTION ENVIRONMENT
-    /*
     getPosts() {
       axios
         .get("https://project7-backend.myportfolio.training/api/post", {
@@ -125,8 +124,8 @@ export default {
           alert(err);
         });
     },
-    */
     // DEVELOPMENT ENVIRONMENT
+    /*
     getPosts() {
       axios
         .get("http://localhost:3000/api/post", {
@@ -148,6 +147,7 @@ export default {
           alert(err);
         });
     },
+    */
     forceRerender() {
       this.componentKey += 1;
     },

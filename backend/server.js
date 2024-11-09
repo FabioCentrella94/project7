@@ -1,4 +1,5 @@
 // DEVELOPMENT ENVIRONMENT
+/*
 const http = require("http");
 const app = require("./app");
 
@@ -47,9 +48,9 @@ httpServer.on("listening", () => {
 });
 
 httpServer.listen(port);
+*/
 
 // PRODUCTION ENVIRONMENT
-/*
 const https = require("https");
 var fs = require("fs");
 const app = require("./app");
@@ -108,4 +109,3 @@ httpsServer.on("listening", () => {
 });
 
 httpsServer.listen(port);
-*/

@@ -1,5 +1,4 @@
 // PRODUCTION ENVIRONMENT
-/*
 const jwt = require("jsonwebtoken");
 const { fetchSecret } = require("../middleware/fetchSecret");
 
@@ -35,9 +34,9 @@ module.exports = (req, res, next) => {
       console.log(err);
     });
 };
-*/
 
 // DEVELOPMENT ENVIRONMENT
+/*
 const jwt = require("jsonwebtoken");
 
 module.exports = (req, res, next) => {
@@ -68,3 +67,4 @@ module.exports = (req, res, next) => {
     });
   }
 };
+*/

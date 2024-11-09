@@ -1,12 +1,13 @@
 // PRODUCTION ENVIRONMENT
-/*
 const express = require("express");
 const bodyParser = require("body-parser");
-
+const helmet = require("helmet");
 const postsRoutes = require("./routes/posts");
 const usersRoutes = require("./routes/users");
 
 const app = express();
+
+app.use(helmet());
 
 app.use((req, res, next) => {
   res.setHeader(
@@ -35,17 +36,21 @@ app.get("/", function (req, res) {
   });
 });
 
+app.get("/favicon.ico", (req, res) => res.status(204));
+
 module.exports = app;
-*/
 
 // DEVELOPMENT ENVIRONMENT
+/*
 const express = require("express");
 const bodyParser = require("body-parser");
-
+const helmet = require("helmet")
 const postsRoutes = require("./routes/posts");
 const usersRoutes = require("./routes/users");
 
 const app = express();
+
+app.use(helmet())
 
 app.use((req, res, next) => {
   res.setHeader(
@@ -74,4 +79,7 @@ app.get("/", function (req, res) {
   });
 });
 
+app.get('/favicon.ico', (req, res) => res.status(204));
+
 module.exports = app;
+*/

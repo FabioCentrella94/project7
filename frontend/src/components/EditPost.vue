@@ -68,7 +68,6 @@ export default {
       formData.append("userId", this.userId);
       formData.append("title", title);
       // PRODUCTION ENVIRONMENT
-      /*
       axios
         .put(
           "https://project7-backend.myportfolio.training/api/post/editpost/" +
@@ -152,8 +151,8 @@ export default {
           alert(err);
         });
     },
-    */
-      // DEVELOPMENT ENVIRONMENT
+    // DEVELOPMENT ENVIRONMENT
+    /*
       axios
         .put(
           "http://localhost:3000/api/post/editpost/" +
@@ -237,6 +236,7 @@ export default {
           alert(err);
         });
     },
+    */
   },
   beforeMount() {
     this.getSinglePost();

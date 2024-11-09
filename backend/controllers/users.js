@@ -1,5 +1,4 @@
 // PRODUCTION ENVIRONMENT
-/*
 const AWS = require("aws-sdk");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -45,6 +44,7 @@ exports.signup = (req, res, next) => {
             data: null,
           });
         });
+        database.releaseConnection(database);
       })
       .catch((err) => {
         console.log(err);
@@ -106,6 +106,7 @@ exports.login = (req, res, next) => {
             });
           });
       });
+      database.releaseConnection(database);
     })
     .catch((err) => {
       console.log(err);
@@ -129,6 +130,7 @@ exports.getUserDetails = (req, res, next) => {
           data: result,
         });
       });
+      database.releaseConnection(database);
     })
     .catch((err) => {
       console.log(err);
@@ -166,6 +168,7 @@ exports.deleteProfile = (req, res, next) => {
           });
         }
       });
+      database.releaseConnection(database);
     })
     .catch((err) => {
       res.json({
@@ -190,14 +193,15 @@ exports.deleteProfile = (req, res, next) => {
           data: null,
         });
       });
+      database.releaseConnection(database);
     })
     .catch((err) => {
       console.log(err);
     });
 };
-*/
 
 // DEVELOPMENT ENVIRONMENT
+/*
 const AWS = require('aws-sdk')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
@@ -337,3 +341,4 @@ exports.deleteProfile = (req, res, next) => {
     })
   })
 }
+  */

@@ -1,5 +1,4 @@
 // PRODUCTION ENVIRONMENT
-/*
 const mysql = require("mysql2");
 const { Signer } = require("@aws-sdk/rds-signer");
 const awsCaBundle = require("aws-ssl-profiles");
@@ -32,9 +31,9 @@ async function connectToDb() {
 }
 
 module.exports.connectToDb = connectToDb;
-*/
 
 // DEVELOPMENT ENVIRONMENT
+/*
 require("dotenv").config();
 const mysql = require("mysql2");
 
@@ -58,3 +57,4 @@ connection.connect(function (err) {
 });
 
 module.exports = connection;
+*/

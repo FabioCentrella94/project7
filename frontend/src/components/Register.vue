@@ -120,7 +120,6 @@ export default {
       }
     },
     // PRODUCTION ENVIRONMENT
-    /*
     register() {
       this.loggingIn = true;
       document.getElementById("loadingGif").removeAttribute("hidden");
@@ -209,8 +208,8 @@ export default {
           alert(err);
         });
     },
-    */
     // DEVELOPMENT ENVIRONMENT
+    /*
     register() {
       this.loggingIn = true;
       document.getElementById("loadingGif").removeAttribute("hidden");
@@ -300,6 +299,7 @@ export default {
           location.reload();
         });
     },
+    */
   },
 };
 </script>

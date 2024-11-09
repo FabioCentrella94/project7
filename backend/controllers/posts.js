@@ -1,5 +1,4 @@
 // PRODUCTION ENVIRONMENT
-/*
 const AWS = require("aws-sdk");
 const { connectToDb } = require("../middleware/dbConfig");
 
@@ -29,6 +28,7 @@ exports.uploadPost = (req, res, next) => {
           data: null,
         });
       });
+      database.releaseConnection(database);
     })
     .catch((err) => {
       console.log(err);
@@ -64,6 +64,7 @@ exports.commentPost = (req, res, next) => {
           });
         }
       );
+      database.releaseConnection(database);
     })
     .catch((err) => {
       console.log(err);
@@ -89,6 +90,7 @@ exports.getLastComment = (req, res, next) => {
           });
         }
       );
+      database.releaseConnection(database);
     })
     .catch((err) => {
       console.log(err);
@@ -125,7 +127,7 @@ exports.editPost = (req, res, next) => {
               });
           });
         });
-
+        database.releaseConnection(database);
         const fileName =
           "https://project7-images.s3.eu-west-2.amazonaws.com/" + req.file.key;
         let sqlUpdate =
@@ -149,6 +151,7 @@ exports.editPost = (req, res, next) => {
             data: null,
           });
         });
+        database.releaseConnection(database);
       } else {
         let sqlUpdate =
           'UPDATE Posts SET Title = "' +
@@ -169,6 +172,7 @@ exports.editPost = (req, res, next) => {
             data: null,
           });
         });
+        database.releaseConnection(database);
       }
     })
     .catch((err) => {
@@ -205,7 +209,7 @@ exports.deletePost = (req, res, next) => {
             });
         });
       });
-
+      database.releaseConnection(database);
       let sqlDelete =
         'DELETE FROM Posts WHERE PostID = "' + req.params.postId + '";';
       database.query(sqlDelete, function (err, result, fields) {
@@ -221,6 +225,7 @@ exports.deletePost = (req, res, next) => {
           data: null,
         });
       });
+      database.releaseConnection(database);
     })
     .catch((err) => {
       console.log(err);
@@ -276,6 +281,7 @@ exports.getAllPosts = (req, res, next) => {
           });
         });
       });
+      database.releaseConnection(database);
     })
     .catch((err) => {
       console.log(err);
@@ -331,6 +337,7 @@ exports.getSinglePost = (req, res, next) => {
           });
         });
       });
+      database.releaseConnection(database);
     })
     .catch((err) => {
       console.log(err);
@@ -354,6 +361,7 @@ exports.getAllLikesPosts = (req, res, next) => {
           data: result,
         });
       });
+      database.releaseConnection(database);
     })
     .catch((err) => {
       console.log(err);
@@ -377,6 +385,7 @@ exports.getAllDislikesPosts = (req, res, next) => {
           data: result,
         });
       });
+      database.releaseConnection(database);
     })
     .catch((err) => {
       console.log(err);
@@ -405,6 +414,7 @@ exports.likePost = (req, res, next) => {
           data: null,
         });
       });
+      database.releaseConnection(database);
     })
     .catch((err) => {
       console.log(err);
@@ -433,6 +443,7 @@ exports.dislikePost = (req, res, next) => {
           data: null,
         });
       });
+      database.releaseConnection(database);
     })
     .catch((err) => {
       console.log(err);
@@ -461,6 +472,7 @@ exports.deleteLikePost = (req, res, next) => {
           data: null,
         });
       });
+      database.releaseConnection(database);
     })
     .catch((err) => {
       console.log(err);
@@ -489,6 +501,7 @@ exports.deleteDislikePost = (req, res, next) => {
           data: null,
         });
       });
+      database.releaseConnection(database);
     })
     .catch((err) => {
       console.log(err);
@@ -515,6 +528,7 @@ exports.getCommentsPost = (req, res, next) => {
           data: comments,
         });
       });
+      database.releaseConnection(database);
     })
     .catch((err) => {
       console.log(err);
@@ -543,6 +557,7 @@ exports.getReply = (req, res, next) => {
           data: comments,
         });
       });
+      database.releaseConnection(database);
     })
     .catch((err) => {
       console.log(err);
@@ -566,6 +581,7 @@ exports.getAllLikesComments = (req, res, next) => {
           data: result,
         });
       });
+      database.releaseConnection(database);
     })
     .catch((err) => {
       console.log(err);
@@ -589,6 +605,7 @@ exports.getAllDislikesComments = (req, res, next) => {
           data: result,
         });
       });
+      database.releaseConnection(database);
     })
     .catch((err) => {
       console.log(err);
@@ -617,6 +634,7 @@ exports.likeComment = (req, res, next) => {
           data: null,
         });
       });
+      database.releaseConnection(database);
     })
     .catch((err) => {
       console.log(err);
@@ -645,6 +663,7 @@ exports.dislikeComment = (req, res, next) => {
           data: null,
         });
       });
+      database.releaseConnection(database);
     })
     .catch((err) => {
       console.log(err);
@@ -673,6 +692,7 @@ exports.deleteLikeComment = (req, res, next) => {
           data: null,
         });
       });
+      database.releaseConnection(database);
     })
     .catch((err) => {
       console.log(err);
@@ -701,6 +721,7 @@ exports.deleteDislikeComment = (req, res, next) => {
           data: null,
         });
       });
+      database.releaseConnection(database);
     })
     .catch((err) => {
       console.log(err);
@@ -727,6 +748,7 @@ exports.deleteComment = (req, res, next) => {
           data: null,
         });
       });
+      database.releaseConnection(database);
     })
     .catch((err) => {
       console.log(err);
@@ -755,14 +777,15 @@ exports.editComment = (req, res, next) => {
           data: null,
         });
       });
+      database.releaseConnection(database);
     })
     .catch((err) => {
       console.log(err);
     });
 };
-*/
 
 // DEVELOPMENT ENVIRONMENT
+/*
 const AWS = require('aws-sdk')
 let db = require('../middleware/dbConfig');
 
@@ -1231,3 +1254,4 @@ exports.editComment = (req, res, next) => {
       })
     })
 }
+    */

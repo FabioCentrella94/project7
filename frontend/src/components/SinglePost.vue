@@ -150,7 +150,7 @@
         @click.prevent="postComment($event)"
         type="submit"
       >
-        ...
+        send
       </button>
     </form>
   </div>
@@ -194,7 +194,6 @@ export default {
   },
   methods: {
     // PRODUCTION ENVIRONMENT
-    /*
     getSinglePost() {
       axios
         .get(
@@ -434,7 +433,7 @@ export default {
             );
             setTimeout(() => {
               parentComment.children = response.data.data;
-            }, 50);
+            }, 100);
           } else if (response.data.status === "401") {
             alert(response.data.message);
             this.$store.commit("logout");
@@ -471,7 +470,7 @@ export default {
                   response.data.data[0],
                 ];
               }
-            }, 50);
+            }, 200);
           } else if (response.data.status === "401") {
             alert(response.data.message);
             this.$store.commit("logout");
@@ -571,8 +570,8 @@ export default {
         $event.target.nextSibling.style.display = "inline";
       }
     },
-    */
     // DEVELOPMENT ENVIRONMENT
+    /*
     getSinglePost() {
       axios
         .get(
@@ -939,6 +938,7 @@ export default {
         $event.target.nextSibling.style.display = "inline";
       }
     },
+    */
   },
   beforeMount() {
     this.getSinglePost(), this.getPostLikes(), this.getPostDislikes();

@@ -54,7 +54,6 @@ export default {
   },
   methods: {
     // PRODUCTION ENVIRONMENT
-    /*
     getUserDetails() {
       axios
         .get(
@@ -107,8 +106,8 @@ export default {
           alert(err);
         });
     },
-    */
     // DEVELOPMENT ENVIRONMENT
+    /*
     getUserDetails() {
       axios
         .get(
@@ -160,6 +159,7 @@ export default {
           alert(err);
         });
     },
+    */
   },
   beforeMount() {
     this.getUserDetails();

@@ -74,6 +74,7 @@ export default {
             document.getElementById("loadingGif").setAttribute("hidden", true);
             this.loggingIn = false;
             alert(response.data.message);
+            location.reload();
           } else if (response.data.status === "401") {
             document.getElementById("loadingGif").setAttribute("hidden", true);
             this.loggingIn = false;
@@ -83,6 +84,7 @@ export default {
             document.getElementById("loadingGif").setAttribute("hidden", true);
             this.loggingIn = false;
             alert(response.data.message);
+            location.reload();
           }
         })
         .catch((err) => {

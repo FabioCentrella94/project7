@@ -5,12 +5,7 @@
       :style="{ 'padding-left': `${depth * 3}%` }"
     >
       <h4 style="color: red; word-wrap: break-word">
-        {{ node.Username
-        }}<span
-          style="word-wrap: break-word"
-          v-if="node.ReplyTo !== undefined"
-          >{{ " " + ">" + " " + node.ReplyTo }}</span
-        >
+        {{ node.Username }}
       </h4>
       <div
         :key="componentKeyEdit"
@@ -426,7 +421,7 @@ export default {
       }
       replyInput[0].focus();
     },
-    sendReply($event) {
+    sendReply() {
       axios
         .post(
           "https://project7-backend.myportfolio.training/api/post/comment/" +
@@ -435,10 +430,7 @@ export default {
             userId: sessionStorage.getItem("userId"),
             comment: this.reply,
             parentId: this.parentId,
-            replyTo:
-              $event.target.parentElement.parentElement.parentElement.childNodes[0].childNodes[0].textContent
-                .split(" ")
-                .splice(0)[0],
+            replyTo: "",
           },
           {
             headers: {
@@ -621,29 +613,45 @@ export default {
       if ($event && !this.expanded) {
         setTimeout(() => {
           this.expanded = true;
-        }, 1400);
+        }, 1500);
         setTimeout(() => {
-          $event.target.parentElement.parentElement.parentElement.parentElement.childNodes[0].childNodes[1].lastElementChild.scrollIntoView();
-        }, 1700);
+          $event.target.parentElement.parentElement.parentElement.childNodes[1].lastElementChild.style.backgroundColor =
+            "#FF7F7F";
+          $event.target.parentElement.parentElement.parentElement.childNodes[1].lastElementChild.scrollIntoView();
+        }, 2000);
+        setTimeout(() => {
+          $event.target.parentElement.parentElement.parentElement.childNodes[1].lastElementChild.style.backgroundColor =
+            "white";
+        }, 3000);
         $event.target.parentElement.style.display = "none";
         setTimeout(() => {
           this.$emit("getReply", this.parentId);
         }, 50);
       } else if ($event && this.expanded) {
-        this.$emit("getLastComment", this.parentId);
+        setTimeout(() => {
+          this.$emit("getLastComment", this.parentId);
+        }, 50);
         $event.target.parentElement.style.display = "none";
         setTimeout(() => {
           this.forceRerender();
         }, 1500);
         setTimeout(() => {
-          $event.target.parentElement.parentElement.parentElement.parentElement.childNodes[0].childNodes[1].lastElementChild.scrollIntoView();
-        }, 1400);
+          $event.target.parentElement.parentElement.parentElement.childNodes[1].lastElementChild.style.backgroundColor =
+            "#FF7F7F";
+          $event.target.parentElement.parentElement.parentElement.childNodes[1].lastElementChild.scrollIntoView();
+        }, 2000);
+        setTimeout(() => {
+          $event.target.parentElement.parentElement.parentElement.childNodes[1].lastElementChild.style.backgroundColor =
+            "white";
+        }, 3000);
         $event.target.parentElement.style.display = "none";
       } else {
-        this.$emit("getReply", this.parentId);
         setTimeout(() => {
           this.expanded = true;
-        }, 1000);
+        }, 1500);
+        setTimeout(() => {
+          this.$emit("getReply", this.parentId);
+        }, 50);
       }
     },
     setParentId($event) {
@@ -783,7 +791,7 @@ export default {
             replyInput[0].focus()
         },
         sendReply($event) {
-            axios.post('http://localhost:3000/api/post/comment/' + this.$route.params.postId, { userId: sessionStorage.getItem('userId'), comment: this.reply, parentId: this.parentId, replyTo: $event.target.parentElement.parentElement.parentElement.childNodes[0].childNodes[0].textContent.split(" ").splice(0)[0]}, {
+            axios.post('http://localhost:3000/api/post/comment/' + this.$route.params.postId, { userId: sessionStorage.getItem('userId'), comment: this.reply, parentId: this.parentId, replyTo: '', {
             headers: {
                     'Authorization': `Bearer ${sessionStorage.getItem('token')}`,
                     'Content-Type': 'application/json'  
@@ -914,23 +922,51 @@ export default {
                 $event.target.nextSibling.style.display = 'inline'
             }
         },
-        getReply($event) {
-            if ($event && !this.expanded) {
-                this.$emit('getReply', this.parentId)
-                setTimeout(() => { this.expanded = true }, 1500)
-                setTimeout(() => { $event.target.parentElement.parentElement.parentElement.parentElement.childNodes[0].childNodes[1].lastElementChild.scrollIntoView() }, 1700)
-                $event.target.parentElement.style.display = 'none'
-            } else if ($event && this.expanded) {
-                this.$emit('getLastComment', this.parentId)
-                $event.target.parentElement.style.display = 'none'
-                setTimeout(() => { this.forceRerender() }, 1500)    
-                setTimeout(() => { $event.target.parentElement.parentElement.parentElement.parentElement.childNodes[0].childNodes[1].lastElementChild.scrollIntoView() }, 1400)
-                $event.target.parentElement.style.display = 'none'
-            } else {
-                this.$emit('getReply', this.parentId)
-                setTimeout(() => { this.expanded = true }, 1000)
-            }
-        },
+ getReply($event) {
+      if ($event && !this.expanded) {
+        setTimeout(() => {
+          this.expanded = true;
+        }, 1500);
+        setTimeout(() => {
+          $event.target.parentElement.parentElement.parentElement.childNodes[1].lastElementChild.style.backgroundColor =
+            "#FF7F7F";
+          $event.target.parentElement.parentElement.parentElement.childNodes[1].lastElementChild.scrollIntoView();
+        }, 2000);
+        setTimeout(() => {
+          $event.target.parentElement.parentElement.parentElement.childNodes[1].lastElementChild.style.backgroundColor =
+            "white";
+        }, 3000);
+        $event.target.parentElement.style.display = "none";
+        setTimeout(() => {
+          this.$emit("getReply", this.parentId);
+        }, 50);
+      } else if ($event && this.expanded) {
+        setTimeout(() => {
+          this.$emit("getLastComment", this.parentId);
+        }, 50);
+        $event.target.parentElement.style.display = "none";
+        setTimeout(() => {
+          this.forceRerender();
+        }, 1500);
+        setTimeout(() => {
+          $event.target.parentElement.parentElement.parentElement.childNodes[1].lastElementChild.style.backgroundColor =
+            "#FF7F7F";
+          $event.target.parentElement.parentElement.parentElement.childNodes[1].lastElementChild.scrollIntoView();
+        }, 2000);
+        setTimeout(() => {
+          $event.target.parentElement.parentElement.parentElement.childNodes[1].lastElementChild.style.backgroundColor =
+            "white";
+        }, 3000);
+        $event.target.parentElement.style.display = "none";
+      } else {
+        setTimeout(() => {
+          this.expanded = true;
+        }, 1500);
+        setTimeout(() => {
+          this.$emit("getReply", this.parentId);
+        }, 50);
+      }
+    },
         setParentId($event) {
             this.parentId = $event.target.id
         },

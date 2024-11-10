@@ -153,6 +153,7 @@ export default {
               let usernameInput = document.getElementsByName("username");
               usernameInput[0].style.borderColor = "crimson";
             }, 400);
+            location.reload();
           } else if (
             response.data.status === "409" &&
             response.data.message === "Email already used!"
@@ -164,10 +165,12 @@ export default {
               let emailInput = document.getElementsByName("email");
               emailInput[0].style.borderColor = "crimson";
             }, 1000);
+            location.reload();
           } else {
             document.getElementById("loadingGif").setAttribute("hidden", true);
             this.loggingIn = false;
             alert(response.data.message);
+            location.reload();
           }
         })
         .catch((err) => {
@@ -200,12 +203,14 @@ export default {
             document.getElementById("loadingGif").setAttribute("hidden", true);
             this.loggingIn = false;
             alert(response.data.message);
+            location.reload();
           }
         })
         .catch((err) => {
           document.getElementById("loadingGif").setAttribute("hidden", true);
           this.loggingIn = false;
           alert(err);
+          location.reload();
         });
     },
     // DEVELOPMENT ENVIRONMENT

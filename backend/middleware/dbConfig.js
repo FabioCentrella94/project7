@@ -47,7 +47,7 @@ connectToDb()
         });
         pingDb = false;
       }
-      setInterval(keepAlive, 27324);
+      setInterval(keepAlive, 27324000);
     }
   })
   .catch((err) => {

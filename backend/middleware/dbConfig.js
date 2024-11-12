@@ -3,6 +3,7 @@ const mysql = require("mysql2");
 const { Signer } = require("@aws-sdk/rds-signer");
 const awsCaBundle = require("aws-ssl-profiles");
 
+let pingDb = false;
 let pool;
 
 async function connectToDb() {
@@ -18,7 +19,8 @@ async function connectToDb() {
   });
 
   pool = mysql.createPool({
-    connectionLimit: 10,
+    connectionLimit: 1,
+    queueLimit: 10,
     host: "project7.cxu3dbx5ys9k.eu-west-2.rds.amazonaws.com",
     user: "project7PublicUser",
     password: await signer.getAuthToken(),
@@ -26,9 +28,31 @@ async function connectToDb() {
     ssl: awsCaBundle,
     multipleStatements: true,
   });
-
+  pingDb = true;
   return pool;
 }
+
+connectToDb()
+  .then((pool) => {
+    if (pingDb) {
+      function keepAlive() {
+        pool.getConnection(function (err, connection) {
+          if (err) {
+            console.error("mysql keepAlive err", err);
+            return;
+          }
+          console.log("ping db");
+          connection.ping();
+          connection.release();
+        });
+        pingDb = false;
+      }
+      setInterval(keepAlive, 27324);
+    }
+  })
+  .catch((err) => {
+    console.log(err);
+  });
 
 module.exports.connectToDb = connectToDb;
 

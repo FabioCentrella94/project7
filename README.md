@@ -2,7 +2,7 @@
 
 Simple full stack web application built using Vue.js, Node.js, Express.js and MySQL.
 <br/>
-Deployed on AWS using S3, CloudFront, RDS, EC2, Route53, IAM, Secrets Manager, Certificate Manager.
+Deployed on AWS using Amplify, RDS, EC2, Route53, IAM, Secrets Manager.
 
 ## Usage ##
 

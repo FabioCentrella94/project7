@@ -32,6 +32,7 @@ app.use("/api/auth", usersRoutes);
 
 app.get("/", function (req, res) {
   res.json({
+    status: 200,
     message: "Server is running",
   });
 });
@@ -75,7 +76,8 @@ app.use("/api/auth", usersRoutes);
 
 app.get("/", function (req, res) {
   res.json({
-    message: "Server is running",
+    status: 200,
+    message: "Server is running"
   });
 });
 

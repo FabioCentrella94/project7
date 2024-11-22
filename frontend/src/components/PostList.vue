@@ -156,7 +156,7 @@ export default {
       for (let i = 0; i < postHeight.length; i++) {
         if (
           postHeight[i].getBoundingClientRect().bottom <
-          window.innerHeight - 400
+          window.innerHeight - 250
         ) {
           postHeight[i].style.visibility = "hidden";
           let readPost = localStorage.getItem(sessionStorage.getItem("userId"));

@@ -1,9 +1,6 @@
 # FULL STACK WEB APPLICATION #
 
-Simple full stack web application built using Vue.js, Node.js, Express.js and MySQL.
-<br/>
-Deployed on AWS using Amplify, RDS, EC2, Route53, IAM, Secrets Manager.
-<br/>
+Simple full stack web application.
 <br/>
 The user can:
 

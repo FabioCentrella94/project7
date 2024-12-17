@@ -2,6 +2,7 @@
 
 Simple full stack web application.
 <br/>
+<br/>
 The user can:
 
 - Register, login or delete the account;
